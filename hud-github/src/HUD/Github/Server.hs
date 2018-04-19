@@ -47,6 +47,8 @@ type API = Header "Authorization" Token :> "api" :> "v1" :>
         "repo" :>
         (
             "prs" :> ReqBody '[JSON] (GithubAccount, GithubRepo) :> Post '[JSON] [PR]
+            :<|>
+            "pr" :> ReqBody '[JSON] (GithubAccount, GithubRepo, GithubPR) :> Post '[JSON] PRDetails
         )
     )
 
@@ -90,6 +92,8 @@ server' :: (
 server' tok =
     (
        authUser tok . uncurry repoPRs
+       :<|>
+       authUser tok . repoPR
     )
 
 --

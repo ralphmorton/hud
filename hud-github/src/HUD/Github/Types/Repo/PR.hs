@@ -2,15 +2,16 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module HUD.Github.Types.Repo.PR (
+    PRDetails(..),
     PR(..),
     PRID(..),
-    PRNum(..),
     PRState(..)
 ) where
 
 import HUD.Bridge (Bridge)
-import HUD.Data (GithubAccount)
+import HUD.Data (GithubAccount, GithubPR)
 import HUD.Github.Types.User (AvatarURL)
+import HUD.Github.Types.Repo.Commit (Commit)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Text (Text)
@@ -21,9 +22,18 @@ import GHC.Generics (Generic)
 --
 --
 
+data PRDetails = PRDetails {
+    prdPR :: PR,
+    prdCommits :: [Commit]
+} deriving (Bridge, Show, Generic, FromJSON, ToJSON)
+
+--
+--
+--
+
 data PR = PR {
     prID :: PRID,
-    prNumber :: PRNum,
+    prNumber :: GithubPR,
     prCreatedAt :: UTCTime,
     prUpdatedAt :: UTCTime,
     prClosedAt :: Maybe UTCTime,
@@ -43,14 +53,6 @@ data PR = PR {
 
 newtype PRID = PRID {
     unPRID :: Int
-} deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
-
---
---
---
-
-newtype PRNum = PRNum {
-    unPRNum :: Int
 } deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
 
 --

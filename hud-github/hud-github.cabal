@@ -54,6 +54,7 @@ library
       HUD.Github.Types
     , HUD.Github.Types.User
     , HUD.Github.Types.Repo
+    , HUD.Github.Types.Repo.Commit
     , HUD.Github.Types.Repo.PR
     , HUD.Github.Server.Repo
   default-language: Haskell2010

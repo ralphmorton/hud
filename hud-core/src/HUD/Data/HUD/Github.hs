@@ -4,7 +4,8 @@
 module HUD.Data.HUD.Github (
     GithubHUD(..),
     GithubAccount(..),
-    GithubRepo(..)
+    GithubRepo(..),
+    GithubPR(..)
 ) where
 
 import HUD.Bridge (Bridge)
@@ -19,6 +20,7 @@ import GHC.Generics (Generic)
 
 data GithubHUD
     = GHHRepoPRs GithubAccount GithubRepo
+    | GHHRepoPR GithubAccount GithubRepo GithubPR
     deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
 
 --
@@ -35,4 +37,12 @@ newtype GithubAccount = GithubAccount {
 
 newtype GithubRepo = GithubRepo {
     unGithubRepo :: Text
+} deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
+
+--
+--
+--
+
+newtype GithubPR = GithubPR {
+    unGithubPR :: Int
 } deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
