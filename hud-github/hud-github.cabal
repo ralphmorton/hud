@@ -47,11 +47,14 @@ library
     , wai
     , random
     , github
+    , vector
   exposed-modules:
       HUD.Github.Server
   other-modules:
       HUD.Github.Types
+    , HUD.Github.Types.User
     , HUD.Github.Types.Repo
+    , HUD.Github.Types.Repo.PR
     , HUD.Github.Server.Repo
   default-language: Haskell2010
   ghc-options: -Wall -Werror -O

@@ -1,8 +1,10 @@
 module HUD.Github.Types (
+    module HUD.Github.Types.User,
     module HUD.Github.Types.Repo,
     GithubError(..)
 ) where
 
+import HUD.Github.Types.User
 import HUD.Github.Types.Repo
 
 import Control.Exception (Exception)
