@@ -18,7 +18,7 @@ import GHC.Generics (Generic)
 --
 
 data GithubHUD
-    = RepoOverview GithubAccount GithubRepo
+    = GHHRepoOverview GithubAccount GithubRepo
     deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
 
 --

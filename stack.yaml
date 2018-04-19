@@ -5,6 +5,7 @@ packages:
 - './hud-logging'
 - './hud-ipc'
 - './hud-email'
+- './hud-github'
 - './hud-identity'
 - location:
     git: https://github.com/ralphmorton/context.git

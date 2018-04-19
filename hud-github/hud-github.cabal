@@ -1,0 +1,86 @@
+name:           hud-github
+version:        0.1.0
+description:    Please see the README on Github at <https://github.com/ralphmorton/hud#readme>
+homepage:       https://github.com/ralphmorton/hud#readme
+bug-reports:    https://github.com/ralphmorton/hud/issues
+author:         Ralph Morton
+maintainer:     ralphmorton@gmail.com
+copyright:      2018 Ralph Morton
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/ralphmorton/hud
+
+library
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , hud-core
+    , hud-logging
+    , hud-ipc
+    , mtl
+    , transformers
+    , exceptions
+    , stm
+    , text
+    , bytestring
+    , base16-bytestring
+    , base64-bytestring
+    , time
+    , containers
+    , aeson
+    , lens
+    , unliftio
+    , amqp
+    , hedis
+    , resource-pool
+    , cryptonite
+    , http-conduit
+    , http-types
+    , servant
+    , servant-server
+    , wai
+    , random
+    , github
+  exposed-modules:
+      HUD.Github.Server
+  other-modules:
+      HUD.Github.Types
+    , HUD.Github.Types.Repo
+    , HUD.Github.Server.Repo
+  default-language: Haskell2010
+  ghc-options: -Wall -Werror -O
+
+executable hud-github
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror -O
+  build-depends:
+      base >=4.7 && <5
+    , hud-core
+    , hud-logging
+    , hud-github
+    , mtl
+    , exceptions
+    , stm
+    , unliftio
+    , bytestring
+    , text
+    , lens
+    , aeson
+    , containers
+    , resource-pool
+    , amqp
+    , http-conduit
+    , servant
+    , servant-server
+    , wai
+    , wai-cors
+    , warp
+  default-language: Haskell2010
