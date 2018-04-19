@@ -1,0 +1,41 @@
+name:           hud-ipc
+version:        0.1.0
+description:    Please see the README on Github at <https://github.com/ralphmorton/hud#readme>
+homepage:       https://github.com/ralphmorton/hud#readme
+bug-reports:    https://github.com/ralphmorton/hud/issues
+author:         Ralph Morton
+maintainer:     ralphmorton@gmail.com
+copyright:      2018 Ralph Morton
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/ralphmorton/hud
+
+library
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , hud-core
+    , hud-logging
+    , mtl
+    , text
+    , bytestring
+    , aeson
+    , time
+    , containers
+    , amqp
+    , unliftio
+    , cryptonite
+    , uuid
+  exposed-modules:
+      HUD.IPC.Server
+    , HUD.IPC.Client
+  other-modules:
+      HUD.IPC.Types
+  default-language: Haskell2010
+  ghc-options: -Wall -Werror -O

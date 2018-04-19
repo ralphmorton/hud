@@ -1,4 +1,4 @@
-name:           hud-core
+name:           hud-logging
 version:        0.1.0
 description:    Please see the README on Github at <https://github.com/ralphmorton/hud#readme>
 homepage:       https://github.com/ralphmorton/hud#readme
@@ -20,54 +20,20 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , hud-core
     , mtl
-    , exceptions
-    , stm
     , free
     , text
     , bytestring
     , time
     , containers
-    , lens
     , aeson
-    , email-validate
-    , unliftio
-    , uuid
-    , persistent
-    , persistent-postgresql
-    , persistent-template
-    , monad-logger
     , mongoDB
     , bson
-    , amqp
-    , hedis
-    , http-conduit
-    , http-client
-    , http-types
     , resource-pool
-    , http-api-data
-    , path-pieces
-    , parsec
-    , random
-    , context
+    , unliftio
+    , uuid
   exposed-modules:
-      HUD.Bridge
-    , HUD.Constants
-    , HUD.Data
-    , HUD.Operational
-    , HUD.Context
-    , HUD.Names
-    , HUD.QueueEndpoint
-    , HUD.IPCProvider
-  other-modules:
-      HUD.Data.Common
-    , HUD.Data.Logging
-    , HUD.Data.Identity
-    , HUD.Operational.SQL
-    , HUD.Operational.Mongo
-    , HUD.Operational.AMQP
-    , HUD.Operational.Redis
-    , HUD.Operational.HTTP
-    , HUD.Operational.Email
+      HUD.Logging
   default-language: Haskell2010
   ghc-options: -Wall -Werror -O

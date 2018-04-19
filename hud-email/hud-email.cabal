@@ -1,4 +1,4 @@
-name:           hud-core
+name:           hud-email
 version:        0.1.0
 description:    Please see the README on Github at <https://github.com/ralphmorton/hud#readme>
 homepage:       https://github.com/ralphmorton/hud#readme
@@ -20,54 +20,45 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , hud-core
+    , hud-logging
+    , hud-ipc
     , mtl
+    , transformers
     , exceptions
     , stm
-    , free
     , text
     , bytestring
     , time
     , containers
-    , lens
     , aeson
-    , email-validate
+    , lens
     , unliftio
-    , uuid
-    , persistent
-    , persistent-postgresql
-    , persistent-template
-    , monad-logger
+    , amqp
     , mongoDB
     , bson
-    , amqp
-    , hedis
+    , cryptonite
     , http-conduit
-    , http-client
     , http-types
-    , resource-pool
-    , http-api-data
-    , path-pieces
-    , parsec
-    , random
-    , context
   exposed-modules:
-      HUD.Bridge
-    , HUD.Constants
-    , HUD.Data
-    , HUD.Operational
-    , HUD.Context
-    , HUD.Names
-    , HUD.QueueEndpoint
-    , HUD.IPCProvider
+      HUD.Email.Send
   other-modules:
-      HUD.Data.Common
-    , HUD.Data.Logging
-    , HUD.Data.Identity
-    , HUD.Operational.SQL
-    , HUD.Operational.Mongo
-    , HUD.Operational.AMQP
-    , HUD.Operational.Redis
-    , HUD.Operational.HTTP
-    , HUD.Operational.Email
+      HUD.Email.Data
   default-language: Haskell2010
   ghc-options: -Wall -Werror -O
+
+executable hud-email
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror -O
+  build-depends:
+      base >=4.7 && <5
+    , hud-core
+    , hud-logging
+    , hud-email
+    , mtl
+    , exceptions
+    , stm
+    , unliftio
+  default-language: Haskell2010
