@@ -14,6 +14,7 @@ import Control.Exception (Exception)
 import Control.Monad (replicateM)
 import Control.Monad.Trans (liftIO)
 import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy as BL
 import Data.Char (toUpper)
 import Data.Text (Text, pack)
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
@@ -28,6 +29,7 @@ import UnliftIO (MonadUnliftIO)
 
 data ResponseException
     = BadEmailToken
+    | GithubAuthorisationFailed BL.ByteString
     deriving Show
 
 instance Exception ResponseException

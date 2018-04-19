@@ -5,7 +5,8 @@
 module HUD.Data.Identity (
     Token(..),
     JWT(..),
-    Identity(..)
+    Identity(..),
+    GithubToken(..)
 ) where
 
 import HUD.Bridge
@@ -92,4 +93,14 @@ intToUTCTime = posixSecondsToUTCTime . fromIntegral
 
 data Identity
     = EmailIdentity EmailAddress
+    | GithubIdentity GithubToken
+    deriving (Eq, Show, Generic, FromJSON, ToJSON)
+
+--
+--
+--
+
+-- | A github token.
+data GithubToken
+    = GithubOAuthToken Text
     deriving (Eq, Show, Generic, FromJSON, ToJSON)
