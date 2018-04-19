@@ -63,6 +63,8 @@ library
       HUD.Data.Common
     , HUD.Data.Logging
     , HUD.Data.Identity
+    , HUD.Data.HUD
+    , HUD.Data.HUD.Github
     , HUD.Operational.SQL
     , HUD.Operational.Mongo
     , HUD.Operational.AMQP
