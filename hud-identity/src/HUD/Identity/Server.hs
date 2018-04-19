@@ -11,6 +11,7 @@
 
 module HUD.Identity.Server (
     SenderAddr(..),
+    GithubClient(..),
     API,
     server
 ) where
@@ -61,7 +62,8 @@ server :: (
     HasContext r RedisPool,
     HasContext r HttpManager,
     HasContext r HMACKey,
-    HasContext r SenderAddr) => Context r -> Server API
+    HasContext r SenderAddr,
+    HasContext r GithubClient) => Context r -> Server API
 server ctx = hoistServer (Proxy :: Proxy API) nat server'
     where
     nat f = do
@@ -88,7 +90,8 @@ server' :: (
     HasContext r RedisPool,
     HasContext r HttpManager,
     HasContext r HMACKey,
-    HasContext r SenderAddr) => ServerT API m
+    HasContext r SenderAddr,
+    HasContext r GithubClient) => ServerT API m
 server' =
     (
         identifyEmail
