@@ -1,0 +1,16 @@
+resolver: lts-11.5
+
+packages:
+- './hud-core'
+- location:
+    git: https://github.com/ralphmorton/context.git
+    commit: 5fd452d0640d9635d093e273e926214938505f5a
+  extra-dep: true
+- location:
+    git: https://github.com/ralphmorton/graft.git
+    commit: 38163c21dd703e7cdea7c14ff25208e57f78f7f8
+  extra-dep: true
+- location:
+    git: https://github.com/ralphmorton/purescript-bridge.git
+    commit: 177402b56ca6631d5d2f415a91643a6314bc3fa6
+  extra-dep: true

@@ -1,0 +1,12 @@
+.stack-work/
+coeus-frontend/bower_components/
+coeus-frontend/node_modules/
+coeus-frontend/.pulp-cache/
+coeus-frontend/output/
+coeus-frontend/build/
+coeus-frontend/generated-docs/
+coeus-frontend/.psc-package/
+coeus-frontend/.psc*
+coeus-frontend/.purs*
+coeus-frontend/.psa*
+*~
