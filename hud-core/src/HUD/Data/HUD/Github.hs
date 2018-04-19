@@ -3,6 +3,7 @@
 
 module HUD.Data.HUD.Github (
     GithubHUD(..),
+    GithubAccount(..),
     GithubRepo(..)
 ) where
 
@@ -17,8 +18,16 @@ import GHC.Generics (Generic)
 --
 
 data GithubHUD
-    = RepoOverview GithubRepo
+    = RepoOverview GithubAccount GithubRepo
     deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
+
+--
+--
+--
+
+newtype GithubAccount = GithubAccount {
+    unGithubAccount :: Text
+} deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
 
 --
 --
