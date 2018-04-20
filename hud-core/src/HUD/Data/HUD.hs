@@ -2,12 +2,12 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module HUD.Data.HUD (
-    module HUD.Data.HUD.Github,
-    HUD(..)
+    HUDReq(..),
+    HUDRsp(..)
 ) where
 
 import HUD.Bridge (Bridge)
-import HUD.Data.HUD.Github
+import qualified HUD.Data.HUD.Github as GH
 
 import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
@@ -16,6 +16,14 @@ import GHC.Generics (Generic)
 --
 --
 
-data HUD
-    = GithubHUD GithubHUD
-    deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
+data HUDReq
+    = HRQGithub GH.HUDReq
+    deriving (Bridge, Show, Generic, FromJSON, ToJSON)
+
+--
+--
+--
+
+data HUDRsp
+    = HRSGithub GH.HUDRsp
+    deriving (Bridge, Show, Generic, FromJSON, ToJSON)

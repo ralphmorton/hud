@@ -1,19 +1,15 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
 
 module Main where
-
-import Prelude hiding (log)
 
 import HUD.Context
 import HUD.Logging (mkMinLogLevel)
 import HUD.Github.Server
 
-import Data.Proxy
-import Network.Wai.Handler.Warp
-import Network.Wai.Middleware.Cors
-import Servant
-import System.Environment
+import Control.Concurrent (forkIO)
+import Control.Monad (void)
+import Control.Monad.Reader (runReaderT)
+import Data.Foldable (traverse_)
+import System.Environment (getEnv)
 
 --
 --
@@ -21,29 +17,13 @@ import System.Environment
 
 main :: IO ()
 main = do
-    port <- read <$> getEnv "PORT"
+    n <- (read <$> getEnv "NUM_SERVERS" :: IO Int)
     c <- buildCtx
-    let server' = serve (Proxy :: Proxy API) (server c)
-    run port (cors (const $ Just corsPolicy) server')
+    let f = runReaderT serveGithub c
+    traverse_ (const . void $ forkIO f) [1..(n-1)]
+    f
     where
     buildCtx =
         mkAmqpPool 50 10 300 +<<
-        mkHttp +<<
         mkMinLogLevel +<<
         emptyC
-
---
---
---
-
-corsPolicy :: CorsResourcePolicy
-corsPolicy = CorsResourcePolicy {
-    corsOrigins         = Nothing,
-    corsMethods         = simpleMethods ++ ["PUT", "DELETE", "PATCH"],
-    corsRequestHeaders  = ["Content-Type", "Authorization", "Host", "User-Agent", "Origin", "Referer"],
-    corsExposedHeaders  = Just ["*"],
-    corsMaxAge          = Nothing,
-    corsIgnoreFailures  = False,
-    corsRequireOrigin   = False,
-    corsVaryOrigin      = False
-}

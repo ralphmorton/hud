@@ -1,17 +1,14 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module HUD.Github.Types.Repo.PR (
-    PRDetails(..),
+module HUD.Data.HUD.Github.Repo.PR (
     PR(..),
-    PRID(..),
     PRState(..)
 ) where
 
 import HUD.Bridge (Bridge)
-import HUD.Data (GithubAccount, GithubPR)
-import HUD.Github.Types.User (AvatarURL)
-import HUD.Github.Types.Repo.Commit (Commit)
+import HUD.Data.HUD.Github.Common (Account, PRID, PRNum)
+import HUD.Data.HUD.Github.User (AvatarURL)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Text (Text)
@@ -22,38 +19,21 @@ import GHC.Generics (Generic)
 --
 --
 
-data PRDetails = PRDetails {
-    prdPR :: PR,
-    prdCommits :: [Commit]
-} deriving (Bridge, Show, Generic, FromJSON, ToJSON)
-
---
---
---
-
 data PR = PR {
     prID :: PRID,
-    prNumber :: GithubPR,
+    prNumber :: PRNum,
     prCreatedAt :: UTCTime,
     prUpdatedAt :: UTCTime,
     prClosedAt :: Maybe UTCTime,
     prMergedAt :: Maybe UTCTime,
-    prUser :: (GithubAccount, AvatarURL),
+    prUser :: (Account, AvatarURL),
     prHtmlURL :: Text,
     prTitle :: Text,
     prBody :: Maybe Text,
     prState :: PRState,
-    prAssignees :: [(GithubAccount, AvatarURL)],
-    prReviewers :: [(GithubAccount, AvatarURL)]
+    prAssignees :: [(Account, AvatarURL)],
+    prReviewers :: [(Account, AvatarURL)]
 } deriving (Bridge, Show, Generic, FromJSON, ToJSON)
-
---
---
---
-
-newtype PRID = PRID {
-    unPRID :: Int
-} deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
 
 --
 --

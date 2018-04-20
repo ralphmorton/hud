@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module HUD.Github.Types.User (
+module HUD.Data.HUD.Github.User (
     AvatarURL(..)
 ) where
 

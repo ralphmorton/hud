@@ -1,15 +1,15 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module HUD.Github.Types.Repo.Commit (
+module HUD.Data.HUD.Github.Repo.Commit (
     Commit(..),
     CommitSHA(..),
     CommitStats(..)
 ) where
 
 import HUD.Bridge (Bridge)
-import HUD.Data (GithubAccount)
-import HUD.Github.Types.User (AvatarURL)
+import HUD.Data.HUD.Github.Common (Account)
+import HUD.Data.HUD.Github.User (AvatarURL)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Text (Text)
@@ -22,8 +22,8 @@ import GHC.Generics (Generic)
 data Commit = Commit {
     cmSHA :: CommitSHA,
     cmURL :: Text,
-    cmCommitter :: Maybe (GithubAccount, AvatarURL),
-    cmAuthor :: Maybe (GithubAccount, AvatarURL),
+    cmCommitter :: Maybe (Account, AvatarURL),
+    cmAuthor :: Maybe (Account, AvatarURL),
     cmStats :: Maybe CommitStats,
     cmMessage :: Text
 } deriving (Bridge, Show, Generic, FromJSON, ToJSON)

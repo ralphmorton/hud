@@ -1,4 +1,4 @@
-name:           hud-github
+name:           hud-dashboard
 version:        0.1.0
 description:    Please see the README on Github at <https://github.com/ralphmorton/hud#readme>
 homepage:       https://github.com/ralphmorton/hud#readme
@@ -29,24 +29,29 @@ library
     , stm
     , text
     , bytestring
+    , base16-bytestring
+    , base64-bytestring
     , time
     , containers
     , aeson
     , lens
     , unliftio
     , amqp
+    , hedis
     , resource-pool
-    , random
-    , github
-    , vector
+    , cryptonite
+    , http-conduit
+    , http-types
+    , servant
+    , servant-server
+    , wai
   exposed-modules:
-      HUD.Github.Server
-  other-modules:
-      HUD.Github.Server.Repo
+      HUD.Dashboard.API
+    , HUD.Dashboard.Server
   default-language: Haskell2010
   ghc-options: -Wall -Werror -O
 
-executable hud-github
+executable hud-dashboard
   main-is: Main.hs
   hs-source-dirs:
       app
@@ -55,7 +60,7 @@ executable hud-github
       base >=4.7 && <5
     , hud-core
     , hud-logging
-    , hud-github
+    , hud-dashboard
     , mtl
     , exceptions
     , stm
@@ -68,4 +73,9 @@ executable hud-github
     , resource-pool
     , amqp
     , http-conduit
+    , servant
+    , servant-server
+    , wai
+    , wai-cors
+    , warp
   default-language: Haskell2010
