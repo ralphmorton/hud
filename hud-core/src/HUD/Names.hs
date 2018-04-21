@@ -3,7 +3,9 @@
 
 module HUD.Names (
     module HUD.QueueEndpoint,
-    module HUD.IPCProvider
+    module HUD.IPCProvider,
+    GithubAuth,
+    Github
 ) where
 
 import HUD.QueueEndpoint
@@ -60,6 +62,20 @@ instance IPCProvider EmailSender where
     type IPCResponse EmailSender = ()
     onHandlerExc _ _ = Reject False
 
+-- | Github authoriser
+data GithubAuth
+
+instance QueueEndpoint GithubAuth where
+    type QueueName GithubAuth = "ipc.githubauth"
+    type DeadLetterQueueName GithubAuth = "ipc.githubauth.dl"
+    queueTTL _ = 86400
+    deadLetterTTL _ = 60
+
+instance IPCProvider GithubAuth where
+    type IPCRequest GithubAuth = OAuthCode Github
+    type IPCResponse GithubAuth = OAuthResult Github
+    onHandlerExc _ _ = Reject False
+    
 -- | Github data provider
 data Github
 
@@ -70,6 +86,6 @@ instance QueueEndpoint Github where
     deadLetterTTL _ = 60
 
 instance IPCProvider Github where
-    type IPCRequest Github = (GithubToken, GH.HUDReq)
+    type IPCRequest Github = (OAuthToken Github, GH.HUDReq)
     type IPCResponse Github = GH.HUDRsp
     onHandlerExc _ _ = Reject False

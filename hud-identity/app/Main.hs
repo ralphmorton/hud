@@ -15,7 +15,6 @@ import HUD.Identity.Server
 import Control.Concurrent (forkIO)
 import Control.Monad (void)
 import Control.Monad.Reader (runReaderT)
-import Data.Bifunctor (bimap)
 import qualified Data.ByteString.Char8 as B
 import Data.Foldable (traverse_)
 import Data.Proxy
@@ -43,7 +42,6 @@ main = do
     run port (cors (const $ Just corsPolicy) server')
     where
     buildCtx =
-        mkGithubClient +<<
         mkSenderAddr +<<
         mkHMACKey +<<
         mkRedisPool +<<
@@ -56,13 +54,6 @@ main = do
 
 mkSenderAddr :: IO SenderAddr
 mkSenderAddr = SenderAddr . EmailAddress . pack <$> getEnv "SENDER_ADDRESS"
-
---
-
-mkGithubClient :: IO GithubClient
-mkGithubClient = do
-    parts <- (,) <$> getEnv "GITHUB_CLIENT_ID" <*> getEnv "GITHUB_CLIENT_SECRET"
-    (pure . uncurry GithubClient) (bimap pack pack parts)
 
 --
 

@@ -1,27 +1,28 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module HUD.Identity.Server.Github (
+module HUD.Github.Authoriser (
     GithubClient(..),
-    authoriseGithub
+    authorise
 ) where
+
+import Prelude hiding (log)
 
 import HUD.Context (viewC)
 import HUD.Data
 import HUD.Operational
-import HUD.Names ()
-import HUD.Identity.Crypto
-import HUD.Identity.Server.Common
+import HUD.Names (Github)
+import HUD.Logging
+import HUD.IPC.Server
 
-import Control.Monad (mzero)
 import Control.Monad.Catch (MonadThrow)
-import Data.Aeson
+import Data.Aeson hiding (Error, Result, Success)
 import Data.ByteString.Lazy (ByteString)
-import Data.Text (Text)
+import qualified Data.Map as M
+import Data.Text (Text, pack)
 import Network.HTTP.Conduit hiding (Request, http)
 import Network.HTTP.Types (methodPost)
 import UnliftIO (MonadUnliftIO)
-import UnliftIO.Exception (throwIO)
 
 --
 --
@@ -36,14 +37,28 @@ data GithubClient = GithubClient {
 --
 --
 
-authoriseGithub :: (
+authorise :: (
+    MonadUnliftIO m,
+    MonadThrow m,
+    ContextReader r m,
+    HasContext r AmqpPool,
+    HasContext r HttpManager,
+    HasContext r MinLogLevel,
+    HasContext r GithubClient) => m ()
+authorise = serveIPC auth
+
+--
+--
+--
+
+auth :: (
     MonadUnliftIO m,
     MonadThrow m,
     ContextReader r m,
     HasContext r HttpManager,
-    HasContext r HMACKey,
-    HasContext r GithubClient) => Text -> m Token
-authoriseGithub code = do
+    HasContext r MinLogLevel,
+    HasContext r GithubClient) => OAuthCode Github -> m (Result (OAuthResult Github))
+auth (OAuthCode code) = do
     reqBody <- buildReqBody code
     ireq <- parseRequest "https://github.com/login/oauth/access_token"
     rsp <- http ireq {
@@ -56,8 +71,12 @@ authoriseGithub code = do
         requestBody = (RequestBodyLBS . encode) reqBody,
         responseTimeout = responseTimeoutMicro 30000000
     }
-    ident <- parseIdentity rsp
-    encodeToken ident tokenTTL
+    case decode (responseBody rsp) of
+        Just tok ->
+            (pure . Success) (ORSuccess tok)
+        Nothing -> do
+            logAuthException code rsp
+            pure (Success ORFailure)
 
 --
 
@@ -74,15 +93,21 @@ buildReqBody code = do
 
 --
 
-parseIdentity :: MonadUnliftIO m => Response ByteString -> m Identity
-parseIdentity rsp = maybe (throwAuthFailed rsp) pure secret
-    where secret = GithubIdentity . unClientSecret <$> decode (responseBody rsp)
+logAuthException :: (
+    MonadUnliftIO m,
+    ContextReader r m,
+    HasContext r MinLogLevel) => Text -> Response ByteString -> m ()
+logAuthException code rsp = log Log {
+    logTime = (),
+    logLevel = Error,
+    logSource = "HUD.Github.Authoriser.logAuthException",
+    logTitle = "Github authorisation failed",
+    logData = M.fromList $ [
+        ("code", code),
+        ("response", (pack . show) rsp)
+    ]
+}
 
---
-
-throwAuthFailed :: MonadUnliftIO m => Response ByteString -> m a
-throwAuthFailed rsp = throwIO (GithubAuthorisationFailed body)
-    where body = (responseBody rsp)
 
 --
 --
@@ -101,13 +126,3 @@ instance ToJSON GithubAuthReq where
             "client_secret" .= gaqClientSecret r,
             "code" .= gaqCode r
         ]
-
---
-
-newtype ClientSecret = ClientSecret {
-    unClientSecret :: GithubToken
-}
-
-instance FromJSON ClientSecret where
-    parseJSON (Object o) = ClientSecret . GithubOAuthToken <$> o .: "access_token"
-    parseJSON _ = mzero

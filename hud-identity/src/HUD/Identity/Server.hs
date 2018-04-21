@@ -11,7 +11,6 @@
 
 module HUD.Identity.Server (
     SenderAddr(..),
-    GithubClient(..),
     API,
     server
 ) where
@@ -22,13 +21,11 @@ import HUD.Operational
 import HUD.Identity.Crypto
 import HUD.Identity.Server.Common
 import HUD.Identity.Server.Email
-import HUD.Identity.Server.Github
 
 import Control.Exception (handle)
 import Control.Monad.Catch (MonadThrow)
 import Control.Monad.Except
 import Control.Monad.Reader
-import Data.Monoid ((<>))
 import Data.Proxy
 import Data.Text (Text)
 import Servant hiding (Context)
@@ -46,11 +43,6 @@ type API = "api" :> "v1" :>
             :<|>
             "confirm" :> ReqBody '[JSON] (EmailAddress, Text) :> Post '[JSON] Token
         )
-        :<|>
-        "github" :>
-        (
-            "authorise" :> ReqBody '[JSON] Text :> Post '[JSON] Token
-        )
     )
 
 --
@@ -62,8 +54,7 @@ server :: (
     HasContext r RedisPool,
     HasContext r HttpManager,
     HasContext r HMACKey,
-    HasContext r SenderAddr,
-    HasContext r GithubClient) => Context r -> Server API
+    HasContext r SenderAddr) => Context r -> Server API
 server ctx = hoistServer (Proxy :: Proxy API) nat server'
     where
     nat f = do
@@ -74,10 +65,6 @@ throwRE :: ResponseException -> Handler a
 throwRE BadEmailToken =
     throwError err400 {
         errBody = "Invalid email token"
-    }
-throwRE (GithubAuthorisationFailed body) =
-    throwError err400 {
-        errBody = "Github authorisation failed: " <> body
     }
 
 --
@@ -90,15 +77,10 @@ server' :: (
     HasContext r RedisPool,
     HasContext r HttpManager,
     HasContext r HMACKey,
-    HasContext r SenderAddr,
-    HasContext r GithubClient) => ServerT API m
+    HasContext r SenderAddr) => ServerT API m
 server' =
     (
         identifyEmail
         :<|>
         uncurry confirmEmailIdentity
-    )
-    :<|>
-    (
-        authoriseGithub
     )

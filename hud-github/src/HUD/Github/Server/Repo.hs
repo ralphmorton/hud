@@ -8,6 +8,7 @@ module HUD.Github.Server.Repo (
 
 import HUD.Data
 import HUD.Data.HUD.Github
+import HUD.Names (Github)
 
 import Control.Arrow ((&&&))
 import Control.Monad ((<=<))
@@ -38,8 +39,8 @@ import UnliftIO.Exception (throwIO)
 --
 --
 
-repoPRs :: MonadUnliftIO m => GithubToken -> Account -> Repo -> m [PR]
-repoPRs (GithubOAuthToken tok) (Account account) (Repo name) = do
+repoPRs :: MonadUnliftIO m => OAuthToken Github -> Account -> Repo -> m [PR]
+repoPRs (OAuthToken tok) (Account account) (Repo name) = do
     let auth = OAuth (encodeUtf8 tok)
     let opts = stateOpen <> sortByUpdated
     let req = pullRequestsForR (N account) (N name) opts (FetchAtLeast 50)
@@ -49,8 +50,8 @@ repoPRs (GithubOAuthToken tok) (Account account) (Repo name) = do
 --
 --
 
-repoPR :: MonadUnliftIO m => GithubToken -> Account -> Repo -> PRNum -> m PRDetails
-repoPR (GithubOAuthToken tok) (Account account) (Repo name) (PRNum num) = do
+repoPR :: MonadUnliftIO m => OAuthToken Github -> Account -> Repo -> PRNum -> m PRDetails
+repoPR (OAuthToken tok) (Account account) (Repo name) (PRNum num) = do
     let auth = OAuth (encodeUtf8 tok)
     let prReq = pullRequestR (N account) (N name) (Id num)
     let commitsReq = pullRequestCommitsR (N account) (N name) (Id num) FetchAll

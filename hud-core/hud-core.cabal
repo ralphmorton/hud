@@ -65,6 +65,7 @@ library
       HUD.Data.Common
     , HUD.Data.Logging
     , HUD.Data.Identity
+    , HUD.Data.OAuth
     , HUD.Data.HUD.Github.Common
     , HUD.Data.HUD.Github.User
     , HUD.Data.HUD.Github.Repo
