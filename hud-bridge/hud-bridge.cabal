@@ -1,0 +1,47 @@
+name:           hud-bridge
+version:        0.1.0
+description:    Please see the README on Github at <https://github.com/ralphmorton/hud#readme>
+homepage:       https://github.com/ralphmorton/hud#readme
+bug-reports:    https://github.com/ralphmorton/hud/issues
+author:         Ralph Morton
+maintainer:     ralphmorton@gmail.com
+copyright:      2018 Ralph Morton
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/ralphmorton/hud
+
+executable hud-bridge
+  main-is: Main.hs
+  other-modules:
+      Bridge.Instructions
+    , Bridge.Types.TH
+    , Bridge.Types
+  hs-source-dirs:
+      app
+  default-extensions:
+        DataKinds
+      , FlexibleContexts
+      , FlexibleInstances
+      , KindSignatures
+      , OverloadedStrings
+      , TypeFamilies
+      , ExistentialQuantification
+  build-depends:
+      base >=4.7 && <5
+    , hud-core
+    , mtl
+    , bytestring
+    , text
+    , lens
+    , aeson
+    , containers
+    , purescript-bridge
+    , template-haskell
+    , directory
+    , filepath
+  default-language: Haskell2010
