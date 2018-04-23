@@ -30,7 +30,7 @@ newtype OAuthCode a = OAuthCode {
 data OAuthResult a
     = ORSuccess (OAuthToken a)
     | ORFailure
-    deriving (Bridge, Show, Generic, FromJSON, ToJSON)
+    deriving (Show, Generic, FromJSON, ToJSON)
 
 --
 --

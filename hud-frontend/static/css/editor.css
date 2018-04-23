@@ -1,0 +1,41 @@
+
+.editor {
+    background: none repeat scroll 0 0 #EEE;
+}
+
+.nestedEditor {
+    border: 1px solid #000;
+}
+
+.nestedEditor .header {
+    background: #333;
+}
+
+h3.nestedEditor .header .title {
+    color: #FFF;
+}
+
+.behaviour {
+    background: #CCC;
+}
+
+.behaviour .header {
+    background: #333;
+}
+
+.behaviour .header-highlighted {
+    background: rgb(145, 53, 30);
+}
+
+.behaviour h4.title {
+    padding: 5px 10px 5px 10px;
+    color: #FFF;
+}
+
+.behaviour .content {
+    padding: 10px;
+}
+
+.targets .hl {
+    font-weight: bold;
+}

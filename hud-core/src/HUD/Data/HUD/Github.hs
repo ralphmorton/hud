@@ -5,8 +5,8 @@ module HUD.Data.HUD.Github (
     module HUD.Data.HUD.Github.Common,
     module HUD.Data.HUD.Github.User,
     module HUD.Data.HUD.Github.Repo,
-    HUDReq(..),
-    HUDRsp(..),
+    GithubHUDReq(..),
+    GithubHUDRsp(..),
     PRDetails(..)
 ) where
 
@@ -22,19 +22,19 @@ import GHC.Generics (Generic)
 --
 --
 
-data HUDReq
-    = HRQRepoPRs Account Repo
-    | HRQRepoPR Account Repo PRNum
+data GithubHUDReq
+    = GHHRQRepoPRs Account Repo
+    | GHHRQRepoPR Account Repo PRNum
     deriving (Bridge, Show, Generic, FromJSON, ToJSON)
 
 --
 --
 --
 
-data HUDRsp
-    = HRSFailure
-    | HRSRepoPRs [PR]
-    | HRSRepoPR PRDetails
+data GithubHUDRsp
+    = GHHRSFailure
+    | GHHRSRepoPRs [PR]
+    | GHHRSRepoPR PRDetails
     deriving (Bridge, Show, Generic, FromJSON, ToJSON)
 
 --

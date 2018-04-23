@@ -14,13 +14,13 @@ import Data.Lens.Record (prop)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (SProxy(SProxy))
-import HUD.Data.HUD.Github (HUDReq, HUDRsp)
+import HUD.Data.HUD.Github (GithubHUDReq, GithubHUDRsp)
 
 import Prelude
 import Data.Generic (class Generic)
 
 newtype HUDRsp =
-    HRSGithub HUDRsp
+    HRSGithub GithubHUDRsp
 
 derive instance genericHUDRsp :: Generic HUDRsp
 
@@ -28,11 +28,11 @@ derive instance newtypeHUDRsp :: Newtype HUDRsp _
 
 
 --------------------------------------------------------------------------------
-_HRSGithub :: Iso' HUDRsp HUDRsp
+_HRSGithub :: Iso' HUDRsp GithubHUDRsp
 _HRSGithub = _Newtype
 --------------------------------------------------------------------------------
 newtype HUDReq =
-    HRQGithub HUDReq
+    HRQGithub GithubHUDReq
 
 derive instance genericHUDReq :: Generic HUDReq
 
@@ -40,7 +40,7 @@ derive instance newtypeHUDReq :: Newtype HUDReq _
 
 
 --------------------------------------------------------------------------------
-_HRQGithub :: Iso' HUDReq HUDReq
+_HRQGithub :: Iso' HUDReq GithubHUDReq
 _HRQGithub = _Newtype
 --------------------------------------------------------------------------------
 instance decodeHUDRsp :: DecodeJson HUDRsp where

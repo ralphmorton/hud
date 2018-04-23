@@ -34,6 +34,7 @@ executable hud-bridge
   build-depends:
       base >=4.7 && <5
     , hud-core
+    , hud-dashboard
     , mtl
     , bytestring
     , text

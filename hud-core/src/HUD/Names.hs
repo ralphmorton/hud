@@ -11,7 +11,7 @@ module HUD.Names (
 import HUD.QueueEndpoint
 import HUD.IPCProvider
 import HUD.Data
-import qualified HUD.Data.HUD.Github as GH
+import HUD.Data.HUD.Github
 import HUD.Operational.Email (Email)
 
 import Data.Time (NominalDiffTime)
@@ -86,6 +86,6 @@ instance QueueEndpoint Github where
     deadLetterTTL _ = 60
 
 instance IPCProvider Github where
-    type IPCRequest Github = (OAuthToken Github, GH.HUDReq)
-    type IPCResponse Github = GH.HUDRsp
+    type IPCRequest Github = (OAuthToken Github, GithubHUDReq)
+    type IPCResponse Github = GithubHUDRsp
     onHandlerExc _ _ = Reject False

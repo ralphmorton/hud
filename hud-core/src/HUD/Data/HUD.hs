@@ -7,7 +7,7 @@ module HUD.Data.HUD (
 ) where
 
 import HUD.Bridge (Bridge)
-import qualified HUD.Data.HUD.Github as GH
+import HUD.Data.HUD.Github (GithubHUDReq, GithubHUDRsp)
 
 import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
@@ -17,7 +17,7 @@ import GHC.Generics (Generic)
 --
 
 data HUDReq
-    = HRQGithub GH.HUDReq
+    = HRQGithub GithubHUDReq
     deriving (Bridge, Show, Generic, FromJSON, ToJSON)
 
 --
@@ -25,5 +25,5 @@ data HUDReq
 --
 
 data HUDRsp
-    = HRSGithub GH.HUDRsp
+    = HRSGithub GithubHUDRsp
     deriving (Bridge, Show, Generic, FromJSON, ToJSON)

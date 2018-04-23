@@ -15,6 +15,7 @@ import Language.PureScript.Bridge
 import HUD.Bridge
 import HUD.Data
 import HUD.Data.HUD
+import HUD.Dashboard.Data.Relational
 
 type ModuleName = String
 type PurescriptCode = String

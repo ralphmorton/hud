@@ -9,7 +9,7 @@ import Prelude hiding (log)
 
 import HUD.Data
 import HUD.Data.HUD
-import qualified HUD.Data.HUD.Github as GH
+import HUD.Data.HUD.Github (GithubHUDReq, GithubHUDRsp)
 import HUD.Operational
 import HUD.Names (Github)
 import HUD.Logging
@@ -54,7 +54,7 @@ fetchHUD' tok (HRQGithub greq) = do
 logGithubFailure :: (
     MonadUnliftIO m,
     ContextReader r m,
-    HasContext r MinLogLevel) => GH.HUDReq -> Maybe (IPCResult GH.HUDRsp) -> m ()
+    HasContext r MinLogLevel) => GithubHUDReq -> Maybe (IPCResult GithubHUDRsp) -> m ()
 logGithubFailure req res = log Log {
     logTime = (),
     logLevel = Warning,

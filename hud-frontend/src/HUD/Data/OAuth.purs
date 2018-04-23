@@ -19,27 +19,6 @@ import Prim (String)
 import Prelude
 import Data.Generic (class Generic)
 
-data OAuthResult a =
-    ORSuccess (OAuthToken a)
-  | ORFailure
-
-derive instance genericOAuthResult :: Generic a => Generic (OAuthResult a)
-
-
---------------------------------------------------------------------------------
-_ORSuccess :: forall a. Prism' (OAuthResult a) (OAuthToken a)
-_ORSuccess = prism' ORSuccess f
-  where
-    f (ORSuccess a) = Just $ a
-    f _ = Nothing
-
-_ORFailure :: forall a. Prism' (OAuthResult a) Unit
-_ORFailure = prism' (\_ -> ORFailure) f
-  where
-    f ORFailure = Just unit
-    f _ = Nothing
-
---------------------------------------------------------------------------------
 newtype OAuthCode a =
     OAuthCode {
       unOAuthCode :: String
@@ -58,10 +37,6 @@ unOAuthCode :: forall a. Lens' (OAuthCode a) String
 unOAuthCode = _Newtype <<< prop (SProxy :: SProxy "unOAuthCode")
 
 --------------------------------------------------------------------------------
-instance decodeOAuthResult :: (Generic a) => DecodeJson (OAuthResult a) where
-    decodeJson = Aeson.decodeJson
-instance encodeOAuthResult :: (Generic a) => EncodeJson (OAuthResult a) where
-    encodeJson = Aeson.encodeJson
 derive instance eqOAuthCode :: (Eq a) => Eq (OAuthCode a)
 instance decodeOAuthCode :: (Generic a) => DecodeJson (OAuthCode a) where
     decodeJson = Aeson.decodeJson

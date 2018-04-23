@@ -53,52 +53,52 @@ prdIssueComments :: Lens' PRDetails (Array IssueComment)
 prdIssueComments = _Newtype <<< prop (SProxy :: SProxy "prdIssueComments")
 
 --------------------------------------------------------------------------------
-data HUDRsp =
-    HRSFailure
-  | HRSRepoPRs (Array PR)
-  | HRSRepoPR PRDetails
+data GithubHUDRsp =
+    GHHRSFailure
+  | GHHRSRepoPRs (Array PR)
+  | GHHRSRepoPR PRDetails
 
-derive instance genericHUDRsp :: Generic HUDRsp
-
-
---------------------------------------------------------------------------------
-_HRSFailure :: Prism' HUDRsp Unit
-_HRSFailure = prism' (\_ -> HRSFailure) f
-  where
-    f HRSFailure = Just unit
-    f _ = Nothing
-
-_HRSRepoPRs :: Prism' HUDRsp (Array PR)
-_HRSRepoPRs = prism' HRSRepoPRs f
-  where
-    f (HRSRepoPRs a) = Just $ a
-    f _ = Nothing
-
-_HRSRepoPR :: Prism' HUDRsp PRDetails
-_HRSRepoPR = prism' HRSRepoPR f
-  where
-    f (HRSRepoPR a) = Just $ a
-    f _ = Nothing
-
---------------------------------------------------------------------------------
-data HUDReq =
-    HRQRepoPRs Account Repo
-  | HRQRepoPR Account Repo PRNum
-
-derive instance genericHUDReq :: Generic HUDReq
+derive instance genericGithubHUDRsp :: Generic GithubHUDRsp
 
 
 --------------------------------------------------------------------------------
-_HRQRepoPRs :: Prism' HUDReq { a :: Account, b :: Repo }
-_HRQRepoPRs = prism' (\{ a, b } -> HRQRepoPRs a b) f
+_GHHRSFailure :: Prism' GithubHUDRsp Unit
+_GHHRSFailure = prism' (\_ -> GHHRSFailure) f
   where
-    f (HRQRepoPRs a b) = Just $ { a: a, b: b }
+    f GHHRSFailure = Just unit
     f _ = Nothing
 
-_HRQRepoPR :: Prism' HUDReq { a :: Account, b :: Repo, c :: PRNum }
-_HRQRepoPR = prism' (\{ a, b, c } -> HRQRepoPR a b c) f
+_GHHRSRepoPRs :: Prism' GithubHUDRsp (Array PR)
+_GHHRSRepoPRs = prism' GHHRSRepoPRs f
   where
-    f (HRQRepoPR a b c) = Just $ { a: a, b: b, c: c }
+    f (GHHRSRepoPRs a) = Just $ a
+    f _ = Nothing
+
+_GHHRSRepoPR :: Prism' GithubHUDRsp PRDetails
+_GHHRSRepoPR = prism' GHHRSRepoPR f
+  where
+    f (GHHRSRepoPR a) = Just $ a
+    f _ = Nothing
+
+--------------------------------------------------------------------------------
+data GithubHUDReq =
+    GHHRQRepoPRs Account Repo
+  | GHHRQRepoPR Account Repo PRNum
+
+derive instance genericGithubHUDReq :: Generic GithubHUDReq
+
+
+--------------------------------------------------------------------------------
+_GHHRQRepoPRs :: Prism' GithubHUDReq { a :: Account, b :: Repo }
+_GHHRQRepoPRs = prism' (\{ a, b } -> GHHRQRepoPRs a b) f
+  where
+    f (GHHRQRepoPRs a b) = Just $ { a: a, b: b }
+    f _ = Nothing
+
+_GHHRQRepoPR :: Prism' GithubHUDReq { a :: Account, b :: Repo, c :: PRNum }
+_GHHRQRepoPR = prism' (\{ a, b, c } -> GHHRQRepoPR a b c) f
+  where
+    f (GHHRQRepoPR a b c) = Just $ { a: a, b: b, c: c }
     f _ = Nothing
 
 --------------------------------------------------------------------------------
@@ -106,12 +106,12 @@ instance decodePRDetails :: DecodeJson PRDetails where
     decodeJson = Aeson.decodeJson
 instance encodePRDetails :: EncodeJson PRDetails where
     encodeJson = Aeson.encodeJson
-instance decodeHUDRsp :: DecodeJson HUDRsp where
+instance decodeGithubHUDRsp :: DecodeJson GithubHUDRsp where
     decodeJson = Aeson.decodeJson
-instance encodeHUDRsp :: EncodeJson HUDRsp where
+instance encodeGithubHUDRsp :: EncodeJson GithubHUDRsp where
     encodeJson = Aeson.encodeJson
-instance decodeHUDReq :: DecodeJson HUDReq where
+instance decodeGithubHUDReq :: DecodeJson GithubHUDReq where
     decodeJson = Aeson.decodeJson
-instance encodeHUDReq :: EncodeJson HUDReq where
+instance encodeGithubHUDReq :: EncodeJson GithubHUDReq where
     encodeJson = Aeson.encodeJson
 
