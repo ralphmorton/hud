@@ -16,6 +16,7 @@ import HUD.Frontend.Component.Error as E
 import HUD.Frontend.Component.SelectAccount as S
 import HUD.Frontend.Component.Dashboard as D
 import HUD.Frontend.Component.List as LI
+import HUD.Frontend.Component.HUD as H
 
 import Control.Monad.Aff (Aff, never)
 import Control.Monad.Eff (Eff)
@@ -77,6 +78,7 @@ boot cfg = runHalogenAff do
         Just (Authed r) -> case r of
             SelectAccount -> authed cfg S.comp unit
             List acc -> dashboard cfg LI.comp unit r acc
+            HUD acc -> dashboard cfg H.comp unit r acc
 
 --
 

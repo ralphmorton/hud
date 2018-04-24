@@ -54,6 +54,8 @@ instance isRouteRoute :: IsRoute Route where
         route pSelectAccount px (Authed SelectAccount)
         <|>
         route pList px (Authed <<< List)
+        <|>
+        route pHUD px (Authed <<< HUD)
     toPath (Public pr) = case pr of
         Login -> unroute pLogin unit
         Onboard -> unroute pOnboard unit
@@ -61,6 +63,7 @@ instance isRouteRoute :: IsRoute Route where
     toPath (Authed ar) = case ar of
         SelectAccount -> unroute pSelectAccount unit
         List acc -> unroute pList (acc :-> unit)
+        HUD acc -> unroute pHUD (acc :-> unit)
 
 --
 
@@ -91,6 +94,7 @@ pError = Proxy
 data AuthedRoute
     = SelectAccount
     | List AccountKey
+    | HUD AccountKey
 
 derive instance eqAuthedRoute :: Eq AuthedRoute
 
@@ -99,10 +103,21 @@ type SelectAccount = Target Route
 pSelectAccount :: Proxy SelectAccount
 pSelectAccount = Proxy
 
-type List = Capture "account" AccountKey :/ Target Route
+type List = AccountPath (Target Route)
 
 pList :: Proxy List
 pList = Proxy
+
+type HUD = AccountPath (L "hud" :/ Target Route)
+
+pHUD :: Proxy HUD
+pHUD = Proxy
+
+--
+--
+--
+
+type AccountPath p = Capture "account" AccountKey :/ p
 
 --
 --
