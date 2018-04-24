@@ -53,11 +53,11 @@ library
     , uuid
   exposed-modules:
       HUD.Dashboard.API
-    , HUD.Dashboard.Data.Relational
-    , HUD.Dashboard.Data.Persist
+    , HUD.Dashboard.Data
     , HUD.Dashboard.Server
   other-modules:
-      HUD.Dashboard.Data
+      HUD.Dashboard.Data.Relational
+    , HUD.Dashboard.Data.Persist
     , HUD.Dashboard.Persistence
     , HUD.Dashboard.Server.Auth
     , HUD.Dashboard.Server.OAuth

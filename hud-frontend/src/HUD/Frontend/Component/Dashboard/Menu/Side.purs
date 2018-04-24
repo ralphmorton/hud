@@ -8,7 +8,7 @@ import Prelude
 
 import HUD.Dashboard.Data.Relational (AccountKey)
 import HUD.Frontend.Operational (IdentityInfo, OpM)
-import HUD.Frontend.Router (AuthedRoute(Home), Route(Authed))
+import HUD.Frontend.Router (AuthedRoute(List), Route(Authed))
 import HUD.Frontend.Web.Navigate (NAVIGATE, navigate)
 
 import Control.Monad.Reader.Class (ask)
@@ -65,7 +65,7 @@ render s = H.nav props [ul]
 renderMenuItems :: State -> Array (ComponentHTML Query)
 renderMenuItems s = [home]
     where
-    home = renderMenuItem "Home" (const (Authed Home))
+    home = renderMenuItem "Home" (Authed <<< List)
 
 renderMenuItem :: String -> (AccountKey -> Route) -> ComponentHTML Query
 renderMenuItem title f = H.li props [link]

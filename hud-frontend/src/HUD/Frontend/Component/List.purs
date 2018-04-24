@@ -1,5 +1,5 @@
 
-module HUD.Frontend.Component.Home (
+module HUD.Frontend.Component.List (
     Query,
     comp
 ) where

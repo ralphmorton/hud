@@ -30,6 +30,8 @@ import HUD.Dashboard.Server.HUD
 import Control.Monad.Except
 import Control.Monad.Reader
 import Control.Monad.Trans.Maybe (runMaybeT)
+import Data.Aeson (encode)
+import Data.ByteString.Lazy (ByteString)
 import qualified Data.Map as M
 import Data.Proxy (Proxy)
 import Data.Text (pack)
@@ -49,17 +51,19 @@ server ctx = hoistServer (Proxy :: Proxy API) nat server'
     where
     nat f = do
         res <- liftIO $ handle (pure . Left) (Right <$> runReaderT f ctx)
-        either throw pure res
+        case res of
+            Left e -> (throwError . errorCtor e) (encode e)
+            Right r -> pure r
 
-throw :: HandlerException -> Handler a
-throw MissingAuthToken = throwError err401 { errBody = "No auth token supplied" }
-throw BadAuthToken = throwError err401 { errBody ="Bad auth token" }
-throw BadPassword = throwError err403 { errBody = "Bad password" }
-throw UnknownUser = throwError err403 { errBody = "Unknown user" }
-throw IllegalPassword = throwError err400 { errBody = "Illegal password" }
-throw NotFound = throwError err404
-throw InternalFailure = throwError err500
-throw MissingGithubToken = throwError err400 { errBody = "No Github token" }
+errorCtor :: HandlerException -> ByteString -> ServantErr
+errorCtor MissingAuthToken s = err401 { errBody = s }
+errorCtor BadAuthToken s = err401 { errBody = s }
+errorCtor BadPassword s = err403 { errBody = s }
+errorCtor UnknownUser s = err403 { errBody = s }
+errorCtor IllegalPassword s = err400 { errBody = s }
+errorCtor NotFound s = err404 { errBody = s }
+errorCtor InternalFailure s = err500 { errBody = s }
+errorCtor MissingGithubToken s = err400 { errBody = s }
 
 --
 
@@ -78,6 +82,10 @@ server' =
         (\tok ->
             authUser tok . flip authGithub
         )
+    )
+    :<|>
+    (\tok ->
+        authUser tok (sql . getUserAccounts . fst)
     )
     :<|>
     (\tok ->

@@ -51,13 +51,16 @@ instance isRouteRoute :: IsRoute Route where
         <|>
         route pError px (Public Error)
         <|>
-        route pHome px (Authed Home)
+        route pSelectAccount px (Authed SelectAccount)
+        <|>
+        route pList px (Authed <<< List)
     toPath (Public pr) = case pr of
         Login -> unroute pLogin unit
         Onboard -> unroute pOnboard unit
         Error -> unroute pError unit
     toPath (Authed ar) = case ar of
-        Home -> unroute pHome unit
+        SelectAccount -> unroute pSelectAccount unit
+        List acc -> unroute pList (acc :-> unit)
 
 --
 
@@ -86,14 +89,20 @@ pError = Proxy
 --
 
 data AuthedRoute
-    = Home
+    = SelectAccount
+    | List AccountKey
 
 derive instance eqAuthedRoute :: Eq AuthedRoute
 
-type Home = Target Route
+type SelectAccount = Target Route
 
-pHome :: Proxy Home
-pHome = Proxy
+pSelectAccount :: Proxy SelectAccount
+pSelectAccount = Proxy
+
+type List = Capture "account" AccountKey :/ Target Route
+
+pList :: Proxy List
+pList = Proxy
 
 --
 --

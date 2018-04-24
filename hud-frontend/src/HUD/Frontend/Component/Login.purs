@@ -12,7 +12,7 @@ import HUD.Frontend.Network.Dashboard (login)
 import HUD.Frontend.Storage (storeToken)
 import HUD.Frontend.Network.HTTP (AJAX, HttpException(StatusCodeException))
 import HUD.Frontend.Web.Navigate (NAVIGATE, navigate)
-import HUD.Frontend.Router (AuthedRoute(Home), PublicRoute(Onboard), Route(..))
+import HUD.Frontend.Router (AuthedRoute(SelectAccount), PublicRoute(Onboard), Route(..))
 import HUD.Frontend.Component.Util (class_)
 
 import Control.Monad.Eff.Class (liftEff)
@@ -237,7 +237,7 @@ login' addr pw = handleLogin do
     res <- login addr pw
     now <- getExpiry (fst res)
     storeToken (Tuple now (snd res))
-    navigate (Authed Home)
+    navigate (Authed SelectAccount)
     pure true
 
 handleLogin :: forall i c e. OpM i c (Effects e) Boolean -> OpM i c (Effects e) Boolean

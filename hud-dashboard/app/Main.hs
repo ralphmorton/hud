@@ -6,7 +6,7 @@ import HUD.Context
 import HUD.Operational
 import HUD.Logging (mkMinLogLevel)
 import HUD.Dashboard.API
-import HUD.Dashboard.Data.Persist (migrate)
+import HUD.Dashboard.Data (migrate)
 import HUD.Dashboard.Server
 
 import Control.Monad.Reader (runReaderT)

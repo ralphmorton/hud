@@ -16,6 +16,7 @@ module HUD.Dashboard.API (
 import HUD.Data
 import HUD.Data.HUD
 import HUD.Names (Github)
+import HUD.Dashboard.Data.Relational (Account, AccountKey, UserLevel)
 
 import Data.Text (Text)
 import Data.Time (NominalDiffTime)
@@ -25,7 +26,7 @@ import Servant
 --
 --
 
-type API = "api" :> "v1" :>
+type API = "api" :>
     (
         "auth" :>
         (
@@ -42,6 +43,11 @@ type API = "api" :> "v1" :>
             (
                 "github" :> ReqBody '[JSON] (OAuthCode Github) :> Post '[JSON] ()
             )
+        )
+        :<|>
+        "accounts" :> Header "Authorization" Token :>
+        (
+            Get '[JSON] [((AccountKey, Account), UserLevel)] 
         )
         :<|>
         "hud" :> Header "Authorization" Token :>

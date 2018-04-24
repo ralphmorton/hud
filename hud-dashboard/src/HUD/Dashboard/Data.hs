@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module HUD.Dashboard.Data (
     module HUD.Dashboard.Data.Relational,
@@ -9,6 +11,8 @@ import HUD.Dashboard.Data.Relational
 import HUD.Dashboard.Data.Persist
 
 import Control.Exception
+import Data.Aeson (FromJSON, ToJSON)
+import GHC.Generics (Generic)
 
 --
 --
@@ -23,7 +27,6 @@ data HandlerException
     | NotFound
     | InternalFailure
     | MissingGithubToken
-    deriving Show
+    deriving (Show, Generic, FromJSON, ToJSON)
 
 instance Exception HandlerException
-

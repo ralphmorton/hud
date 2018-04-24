@@ -13,8 +13,9 @@ import HUD.Frontend.Web.Navigate (NAVIGATE, navigate)
 import HUD.Frontend.Component.Login as L
 import HUD.Frontend.Component.Onboard as O
 import HUD.Frontend.Component.Error as E
-import HUD.Frontend.Component.Home as H
+import HUD.Frontend.Component.SelectAccount as S
 import HUD.Frontend.Component.Dashboard as D
+import HUD.Frontend.Component.List as LI
 
 import Control.Monad.Aff (Aff, never)
 import Control.Monad.Eff (Eff)
@@ -74,7 +75,8 @@ boot cfg = runHalogenAff do
             Onboard -> public runOp cfg O.comp unit
             Error -> public idNat cfg E.comp unit
         Just (Authed r) -> case r of
-            Home -> authed cfg H.comp unit
+            SelectAccount -> authed cfg S.comp unit
+            List acc -> dashboard cfg LI.comp unit r acc
 
 --
 

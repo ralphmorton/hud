@@ -7,7 +7,7 @@ module HUD.Frontend.Component.Error (
 import Prelude
 
 import HUD.Frontend.Web.Navigate (NAVIGATE, navigate)
-import HUD.Frontend.Router (AuthedRoute(Home), Route(Authed))
+import HUD.Frontend.Router (AuthedRoute(SelectAccount), Route(Authed))
 
 import Control.Monad.Aff (Aff)
 import Data.Maybe (Maybe(Nothing))
@@ -60,5 +60,5 @@ render _ = H.div_ [message, button]
 
 eval :: forall e. Query ~> ComponentDSL Unit Query Void (Aff (Effects e))
 eval (GoHome next) = do
-    navigate (Authed Home)
+    navigate (Authed SelectAccount)
     pure next
