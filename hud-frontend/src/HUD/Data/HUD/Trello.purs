@@ -14,13 +14,41 @@ import Data.Lens.Record (prop)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (SProxy(SProxy))
-import HUD.Data.HUD.Trello.Board (BoardOverview)
-import HUD.Data.HUD.Trello.Common (Board)
-import Prim (Int)
+import Data.Tuple (Tuple)
+import HUD.Data.HUD.Trello.Board (Board, BoardOverview)
+import Prim (Array, Int, String)
 
 import Prelude
 import Data.Generic (class Generic)
 
+data TrelloRsp =
+    TRRSFailure TrelloRequestException
+  | TRRSBoards (Array (Tuple Board String))
+  | TRRSBoardOverview BoardOverview
+
+derive instance genericTrelloRsp :: Generic TrelloRsp
+
+
+--------------------------------------------------------------------------------
+_TRRSFailure :: Prism' TrelloRsp TrelloRequestException
+_TRRSFailure = prism' TRRSFailure f
+  where
+    f (TRRSFailure a) = Just $ a
+    f _ = Nothing
+
+_TRRSBoards :: Prism' TrelloRsp (Array (Tuple Board String))
+_TRRSBoards = prism' TRRSBoards f
+  where
+    f (TRRSBoards a) = Just $ a
+    f _ = Nothing
+
+_TRRSBoardOverview :: Prism' TrelloRsp BoardOverview
+_TRRSBoardOverview = prism' TRRSBoardOverview f
+  where
+    f (TRRSBoardOverview a) = Just $ a
+    f _ = Nothing
+
+--------------------------------------------------------------------------------
 data TrelloRequestException =
     TRREAuthFailure
   | TRREParseFailure
@@ -49,49 +77,37 @@ _TRREUnknownFailure = prism' TRREUnknownFailure f
     f _ = Nothing
 
 --------------------------------------------------------------------------------
-data TrelloHUDRsp =
-    TRHRSFailure TrelloRequestException
-  | TRHRSBoardOverview BoardOverview
+data TrelloReq =
+    TRRQBoards
+  | TRRQBoardOverview Board
 
-derive instance genericTrelloHUDRsp :: Generic TrelloHUDRsp
+derive instance genericTrelloReq :: Generic TrelloReq
 
 
 --------------------------------------------------------------------------------
-_TRHRSFailure :: Prism' TrelloHUDRsp TrelloRequestException
-_TRHRSFailure = prism' TRHRSFailure f
+_TRRQBoards :: Prism' TrelloReq Unit
+_TRRQBoards = prism' (\_ -> TRRQBoards) f
   where
-    f (TRHRSFailure a) = Just $ a
+    f TRRQBoards = Just unit
     f _ = Nothing
 
-_TRHRSBoardOverview :: Prism' TrelloHUDRsp BoardOverview
-_TRHRSBoardOverview = prism' TRHRSBoardOverview f
+_TRRQBoardOverview :: Prism' TrelloReq Board
+_TRRQBoardOverview = prism' TRRQBoardOverview f
   where
-    f (TRHRSBoardOverview a) = Just $ a
+    f (TRRQBoardOverview a) = Just $ a
     f _ = Nothing
 
 --------------------------------------------------------------------------------
-newtype TrelloHUDReq =
-    TRHRQBoardOverview Board
-
-derive instance genericTrelloHUDReq :: Generic TrelloHUDReq
-
-derive instance newtypeTrelloHUDReq :: Newtype TrelloHUDReq _
-
-
---------------------------------------------------------------------------------
-_TRHRQBoardOverview :: Iso' TrelloHUDReq Board
-_TRHRQBoardOverview = _Newtype
---------------------------------------------------------------------------------
+instance decodeTrelloRsp :: DecodeJson TrelloRsp where
+    decodeJson = Aeson.decodeJson
+instance encodeTrelloRsp :: EncodeJson TrelloRsp where
+    encodeJson = Aeson.encodeJson
 instance decodeTrelloRequestException :: DecodeJson TrelloRequestException where
     decodeJson = Aeson.decodeJson
 instance encodeTrelloRequestException :: EncodeJson TrelloRequestException where
     encodeJson = Aeson.encodeJson
-instance decodeTrelloHUDRsp :: DecodeJson TrelloHUDRsp where
+instance decodeTrelloReq :: DecodeJson TrelloReq where
     decodeJson = Aeson.decodeJson
-instance encodeTrelloHUDRsp :: EncodeJson TrelloHUDRsp where
-    encodeJson = Aeson.encodeJson
-instance decodeTrelloHUDReq :: DecodeJson TrelloHUDReq where
-    decodeJson = Aeson.decodeJson
-instance encodeTrelloHUDReq :: EncodeJson TrelloHUDReq where
+instance encodeTrelloReq :: EncodeJson TrelloReq where
     encodeJson = Aeson.encodeJson
 

@@ -2,13 +2,13 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module HUD.Data.HUD (
-    HUDReq(..),
-    HUDRsp(..)
+    Req(..),
+    Rsp(..)
 ) where
 
 import HUD.Bridge (Bridge)
-import HUD.Data.HUD.Github (GithubHUDReq, GithubHUDRsp)
-import HUD.Data.HUD.Trello (TrelloHUDReq, TrelloHUDRsp)
+import HUD.Data.HUD.Github (GithubReq, GithubRsp)
+import HUD.Data.HUD.Trello (TrelloReq, TrelloRsp)
 
 import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)
@@ -17,16 +17,16 @@ import GHC.Generics (Generic)
 --
 --
 
-data HUDReq
-    = HRQGithub GithubHUDReq
-    | HRQTrello TrelloHUDReq
+data Req
+    = RQGithub GithubReq
+    | RQTrello TrelloReq
     deriving (Bridge, Show, Generic, FromJSON, ToJSON)
 
 --
 --
 --
 
-data HUDRsp
-    = HRSGithub GithubHUDRsp
-    | HRSTrello TrelloHUDRsp
+data Rsp
+    = RSGithub GithubRsp
+    | RSTrello TrelloRsp
     deriving (Bridge, Show, Generic, FromJSON, ToJSON)

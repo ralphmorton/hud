@@ -6,11 +6,11 @@ module HUD.Frontend.Component.HUD (
 
 import Prelude
 
-import HUD.Data.HUD (HUDReq(..), HUDRsp)
-import HUD.Data.HUD.Github (GithubHUDReq(GHHRQRepoPR))
+import HUD.Data.HUD (Req(..), Rsp)
+import HUD.Data.HUD.Github (GithubReq(GHRQRepos, GHRQRepoPR))
 import HUD.Data.HUD.Github.Common (Account(..), Repo(..), PRNum(..))
-import HUD.Data.HUD.Trello (TrelloHUDReq(TRHRQBoardOverview))
-import HUD.Data.HUD.Trello.Common (Board(..))
+import HUD.Data.HUD.Trello (TrelloReq(TRRQBoards, TRRQBoardOverview))
+import HUD.Data.HUD.Trello.Board (Board(..))
 import HUD.Frontend.Operational (IdentityInfo, OpM)
 import HUD.Frontend.Network.HTTP (AJAX)
 import HUD.Frontend.Network.Dashboard (hud)
@@ -44,8 +44,7 @@ data State
 --
 
 type ViewState = {
-    rsp1 :: HUDRsp,
-    rsp2 :: HUDRsp
+    samples :: Array Rsp
 }
 
 --
@@ -85,12 +84,7 @@ renderLoading = H.div_ [H.text "Loading"]
 --
 
 renderView :: ViewState -> ComponentHTML Query
-renderView vs =
-    H.div_
-        [
-            H.div_  [H.text (gShow vs.rsp1)],
-            H.div_  [H.text (gShow vs.rsp2)]
-        ]
+renderView vs = H.div_ (H.div_ <<< pure <<< H.text <<< gShow <$> vs.samples)
 
 --
 --
@@ -110,7 +104,9 @@ loadViewState = do
     let account = Account { unAccount: "ralphmorton" }
     let repo = Repo { unRepo: "coeus" }
     let prnum = PRNum { unPRNum: 2 }
-    let req1 = HRQGithub (GHHRQRepoPR account repo prnum)
     let board = Board { unBoard: "5ae02df1331f8a5d15c660d9" }
-    let req2 = HRQTrello (TRHRQBoardOverview board)
-    { rsp1: _, rsp2: _ } <$> hud req1 <*> hud req2
+    rsp1 <- hud (RQGithub GHRQRepos)
+    rsp2 <- hud (RQGithub (GHRQRepoPR account repo prnum))
+    rsp3 <- hud (RQTrello TRRQBoards)
+    rsp4 <- hud (RQTrello (TRRQBoardOverview board))
+    pure { samples: [rsp1, rsp2, rsp3, rsp4] }

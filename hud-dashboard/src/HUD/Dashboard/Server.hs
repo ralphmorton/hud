@@ -90,7 +90,7 @@ server' =
     :<|>
     (\tok ->
         (
-            authUser tok . flip fetchHUD
+            authUser tok . flip query
         )
     )
 

@@ -14,6 +14,7 @@ import Data.Lens.Record (prop)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (SProxy(SProxy))
+import Data.Tuple (Tuple)
 import HUD.Data.HUD.Github.Common (Account, PRNum, Repo)
 import HUD.Data.HUD.Github.Repo.Comment (Comment, IssueComment)
 import HUD.Data.HUD.Github.Repo.Commit (Commit)
@@ -53,52 +54,66 @@ prdIssueComments :: Lens' PRDetails (Array IssueComment)
 prdIssueComments = _Newtype <<< prop (SProxy :: SProxy "prdIssueComments")
 
 --------------------------------------------------------------------------------
-data GithubHUDRsp =
-    GHHRSFailure
-  | GHHRSRepoPRs (Array PR)
-  | GHHRSRepoPR PRDetails
+data GithubRsp =
+    GHRSFailure
+  | GHRSRepos (Array (Tuple Account Repo))
+  | GHRSRepoPRs (Array PR)
+  | GHRSRepoPR PRDetails
 
-derive instance genericGithubHUDRsp :: Generic GithubHUDRsp
-
-
---------------------------------------------------------------------------------
-_GHHRSFailure :: Prism' GithubHUDRsp Unit
-_GHHRSFailure = prism' (\_ -> GHHRSFailure) f
-  where
-    f GHHRSFailure = Just unit
-    f _ = Nothing
-
-_GHHRSRepoPRs :: Prism' GithubHUDRsp (Array PR)
-_GHHRSRepoPRs = prism' GHHRSRepoPRs f
-  where
-    f (GHHRSRepoPRs a) = Just $ a
-    f _ = Nothing
-
-_GHHRSRepoPR :: Prism' GithubHUDRsp PRDetails
-_GHHRSRepoPR = prism' GHHRSRepoPR f
-  where
-    f (GHHRSRepoPR a) = Just $ a
-    f _ = Nothing
-
---------------------------------------------------------------------------------
-data GithubHUDReq =
-    GHHRQRepoPRs Account Repo
-  | GHHRQRepoPR Account Repo PRNum
-
-derive instance genericGithubHUDReq :: Generic GithubHUDReq
+derive instance genericGithubRsp :: Generic GithubRsp
 
 
 --------------------------------------------------------------------------------
-_GHHRQRepoPRs :: Prism' GithubHUDReq { a :: Account, b :: Repo }
-_GHHRQRepoPRs = prism' (\{ a, b } -> GHHRQRepoPRs a b) f
+_GHRSFailure :: Prism' GithubRsp Unit
+_GHRSFailure = prism' (\_ -> GHRSFailure) f
   where
-    f (GHHRQRepoPRs a b) = Just $ { a: a, b: b }
+    f GHRSFailure = Just unit
     f _ = Nothing
 
-_GHHRQRepoPR :: Prism' GithubHUDReq { a :: Account, b :: Repo, c :: PRNum }
-_GHHRQRepoPR = prism' (\{ a, b, c } -> GHHRQRepoPR a b c) f
+_GHRSRepos :: Prism' GithubRsp (Array (Tuple Account Repo))
+_GHRSRepos = prism' GHRSRepos f
   where
-    f (GHHRQRepoPR a b c) = Just $ { a: a, b: b, c: c }
+    f (GHRSRepos a) = Just $ a
+    f _ = Nothing
+
+_GHRSRepoPRs :: Prism' GithubRsp (Array PR)
+_GHRSRepoPRs = prism' GHRSRepoPRs f
+  where
+    f (GHRSRepoPRs a) = Just $ a
+    f _ = Nothing
+
+_GHRSRepoPR :: Prism' GithubRsp PRDetails
+_GHRSRepoPR = prism' GHRSRepoPR f
+  where
+    f (GHRSRepoPR a) = Just $ a
+    f _ = Nothing
+
+--------------------------------------------------------------------------------
+data GithubReq =
+    GHRQRepos
+  | GHRQRepoPRs Account Repo
+  | GHRQRepoPR Account Repo PRNum
+
+derive instance genericGithubReq :: Generic GithubReq
+
+
+--------------------------------------------------------------------------------
+_GHRQRepos :: Prism' GithubReq Unit
+_GHRQRepos = prism' (\_ -> GHRQRepos) f
+  where
+    f GHRQRepos = Just unit
+    f _ = Nothing
+
+_GHRQRepoPRs :: Prism' GithubReq { a :: Account, b :: Repo }
+_GHRQRepoPRs = prism' (\{ a, b } -> GHRQRepoPRs a b) f
+  where
+    f (GHRQRepoPRs a b) = Just $ { a: a, b: b }
+    f _ = Nothing
+
+_GHRQRepoPR :: Prism' GithubReq { a :: Account, b :: Repo, c :: PRNum }
+_GHRQRepoPR = prism' (\{ a, b, c } -> GHRQRepoPR a b c) f
+  where
+    f (GHRQRepoPR a b c) = Just $ { a: a, b: b, c: c }
     f _ = Nothing
 
 --------------------------------------------------------------------------------
@@ -106,12 +121,12 @@ instance decodePRDetails :: DecodeJson PRDetails where
     decodeJson = Aeson.decodeJson
 instance encodePRDetails :: EncodeJson PRDetails where
     encodeJson = Aeson.encodeJson
-instance decodeGithubHUDRsp :: DecodeJson GithubHUDRsp where
+instance decodeGithubRsp :: DecodeJson GithubRsp where
     decodeJson = Aeson.decodeJson
-instance encodeGithubHUDRsp :: EncodeJson GithubHUDRsp where
+instance encodeGithubRsp :: EncodeJson GithubRsp where
     encodeJson = Aeson.encodeJson
-instance decodeGithubHUDReq :: DecodeJson GithubHUDReq where
+instance decodeGithubReq :: DecodeJson GithubReq where
     decodeJson = Aeson.decodeJson
-instance encodeGithubHUDReq :: EncodeJson GithubHUDReq where
+instance encodeGithubReq :: EncodeJson GithubReq where
     encodeJson = Aeson.encodeJson
 

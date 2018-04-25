@@ -42,6 +42,8 @@ library
       HUD.Trello.Server
   other-modules:
       HUD.Trello.Types
+    , HUD.Trello.Server.Request
+    , HUD.Trello.Server.Member
     , HUD.Trello.Server.Board
   default-language: Haskell2010
   ghc-options: -Wall -Werror -O

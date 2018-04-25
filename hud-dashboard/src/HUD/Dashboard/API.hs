@@ -52,6 +52,6 @@ type API = "api" :>
         :<|>
         "hud" :> Header "Authorization" Token :>
         (
-            ReqBody '[JSON] HUDReq :> Post '[JSON] HUDRsp
+            ReqBody '[JSON] Req :> Post '[JSON] Rsp
         )
     )

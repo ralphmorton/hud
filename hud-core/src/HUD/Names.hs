@@ -88,8 +88,8 @@ instance QueueEndpoint Github where
     deadLetterTTL _ = 60
 
 instance IPCProvider Github where
-    type IPCRequest Github = (OAuthToken Github, GithubHUDReq)
-    type IPCResponse Github = GithubHUDRsp
+    type IPCRequest Github = (OAuthToken Github, GithubReq)
+    type IPCResponse Github = GithubRsp
     onHandlerExc _ _ = Reject False
 
 -- | Trello data provider
@@ -102,6 +102,6 @@ instance QueueEndpoint Trello where
     deadLetterTTL _ = 60
 
 instance IPCProvider Trello where
-    type IPCRequest Trello = (OAuthToken Trello, TrelloHUDReq)
-    type IPCResponse Trello = TrelloHUDRsp
+    type IPCRequest Trello = (OAuthToken Trello, TrelloReq)
+    type IPCResponse Trello = TrelloRsp
     onHandlerExc _ _ = Reject False

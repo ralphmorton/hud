@@ -14,60 +14,60 @@ import Data.Lens.Record (prop)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (SProxy(SProxy))
-import HUD.Data.HUD.Github (GithubHUDReq, GithubHUDRsp)
-import HUD.Data.HUD.Trello (TrelloHUDReq, TrelloHUDRsp)
+import HUD.Data.HUD.Github (GithubReq, GithubRsp)
+import HUD.Data.HUD.Trello (TrelloReq, TrelloRsp)
 
 import Prelude
 import Data.Generic (class Generic)
 
-data HUDRsp =
-    HRSGithub GithubHUDRsp
-  | HRSTrello TrelloHUDRsp
+data Rsp =
+    RSGithub GithubRsp
+  | RSTrello TrelloRsp
 
-derive instance genericHUDRsp :: Generic HUDRsp
-
-
---------------------------------------------------------------------------------
-_HRSGithub :: Prism' HUDRsp GithubHUDRsp
-_HRSGithub = prism' HRSGithub f
-  where
-    f (HRSGithub a) = Just $ a
-    f _ = Nothing
-
-_HRSTrello :: Prism' HUDRsp TrelloHUDRsp
-_HRSTrello = prism' HRSTrello f
-  where
-    f (HRSTrello a) = Just $ a
-    f _ = Nothing
-
---------------------------------------------------------------------------------
-data HUDReq =
-    HRQGithub GithubHUDReq
-  | HRQTrello TrelloHUDReq
-
-derive instance genericHUDReq :: Generic HUDReq
+derive instance genericRsp :: Generic Rsp
 
 
 --------------------------------------------------------------------------------
-_HRQGithub :: Prism' HUDReq GithubHUDReq
-_HRQGithub = prism' HRQGithub f
+_RSGithub :: Prism' Rsp GithubRsp
+_RSGithub = prism' RSGithub f
   where
-    f (HRQGithub a) = Just $ a
+    f (RSGithub a) = Just $ a
     f _ = Nothing
 
-_HRQTrello :: Prism' HUDReq TrelloHUDReq
-_HRQTrello = prism' HRQTrello f
+_RSTrello :: Prism' Rsp TrelloRsp
+_RSTrello = prism' RSTrello f
   where
-    f (HRQTrello a) = Just $ a
+    f (RSTrello a) = Just $ a
     f _ = Nothing
 
 --------------------------------------------------------------------------------
-instance decodeHUDRsp :: DecodeJson HUDRsp where
+data Req =
+    RQGithub GithubReq
+  | RQTrello TrelloReq
+
+derive instance genericReq :: Generic Req
+
+
+--------------------------------------------------------------------------------
+_RQGithub :: Prism' Req GithubReq
+_RQGithub = prism' RQGithub f
+  where
+    f (RQGithub a) = Just $ a
+    f _ = Nothing
+
+_RQTrello :: Prism' Req TrelloReq
+_RQTrello = prism' RQTrello f
+  where
+    f (RQTrello a) = Just $ a
+    f _ = Nothing
+
+--------------------------------------------------------------------------------
+instance decodeRsp :: DecodeJson Rsp where
     decodeJson = Aeson.decodeJson
-instance encodeHUDRsp :: EncodeJson HUDRsp where
+instance encodeRsp :: EncodeJson Rsp where
     encodeJson = Aeson.encodeJson
-instance decodeHUDReq :: DecodeJson HUDReq where
+instance decodeReq :: DecodeJson Req where
     decodeJson = Aeson.decodeJson
-instance encodeHUDReq :: EncodeJson HUDReq where
+instance encodeReq :: EncodeJson Req where
     encodeJson = Aeson.encodeJson
 

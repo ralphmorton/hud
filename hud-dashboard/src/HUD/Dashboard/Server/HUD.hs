@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module HUD.Dashboard.Server.HUD (
-    fetchHUD
+    query
 ) where
 
 import Prelude hiding (log)
@@ -25,37 +25,37 @@ import UnliftIO.Exception (throwIO)
 --
 --
 
-fetchHUD :: (
+query :: (
     MonadUnliftIO m,
     ContextReader r m,
     HasContext r AmqpPool,
-    HasContext r MinLogLevel) => (UserKey, User) -> HUDReq -> m HUDRsp
-fetchHUD = fetchHUD' . snd
+    HasContext r MinLogLevel) => (UserKey, User) -> Req -> m Rsp
+query = query' . snd
 
 --
 
-fetchHUD' :: (
+query' :: (
     MonadUnliftIO m,
     ContextReader r m,
     HasContext r AmqpPool,
-    HasContext r MinLogLevel) => User -> HUDReq -> m HUDRsp
-fetchHUD' user (HRQGithub req) = case userGithubToken user of
+    HasContext r MinLogLevel) => User -> Req -> m Rsp
+query' user (RQGithub req) = case userGithubToken user of
     Nothing -> throwIO MissingGithubToken
     Just tok -> do
         res <- ipc 30 (tok, req)
         case res of
             Just (IPCResult rsp) ->
-                pure (HRSGithub rsp)
+                pure (RSGithub rsp)
             _ -> do
                 logFailure "Github" req res
                 throwIO InternalFailure
-fetchHUD' user (HRQTrello req) = case userTrelloToken user of
+query' user (RQTrello req) = case userTrelloToken user of
     Nothing -> throwIO MissingTrelloToken
     Just tok -> do
         res <- ipc 30 (tok, req)
         case res of
             Just (IPCResult rsp) ->
-                pure (HRSTrello rsp)
+                pure (RSTrello rsp)
             _ -> do
                 logFailure "Trello" req res
                 throwIO InternalFailure

@@ -9,7 +9,7 @@ module HUD.Frontend.Network.Dashboard (
 import Prelude
 
 import HUD.Data.Common (EmailAddress)
-import HUD.Data.HUD (HUDReq, HUDRsp)
+import HUD.Data.HUD (Req, Rsp)
 import HUD.Data.Identity (Token, unToken)
 import HUD.Dashboard.Data.Relational (Account, AccountKey, UserLevel)
 import HUD.Frontend.Operational (IdentityInfo(..), OpM)
@@ -52,7 +52,7 @@ listAccounts = httpJSON =<< authedReq GET "api/accounts" noData
 --
 --
 
-hud :: forall e c. HUDReq -> OpM IdentityInfo c (ajax :: AJAX | e) HUDRsp
+hud :: forall e c. Req -> OpM IdentityInfo c (ajax :: AJAX | e) Rsp
 hud = httpJSON <=< authedReq POST "api/hud" <<< jsonData
 
 --

@@ -39,20 +39,22 @@ serve = serveIPC (uncurry request)
 request :: (
     MonadUnliftIO m,
     ContextReader r m,
-    HasContext r MinLogLevel) => OAuthToken Github -> GithubHUDReq -> m (Result GithubHUDRsp)
+    HasContext r MinLogLevel) => OAuthToken Github -> GithubReq -> m (Result GithubRsp)
 request tok req = catchAny (Success <$> runRequest tok req) $ \e -> do
     logRequestException req e
-    pure (Success GHHRSFailure)
+    pure (Success GHRSFailure)
 
 --
 --
 --
 
-runRequest :: MonadUnliftIO m => OAuthToken Github -> GithubHUDReq -> m GithubHUDRsp
-runRequest tok (GHHRQRepoPRs account repo) =
-    GHHRSRepoPRs <$> repoPRs tok account repo
-runRequest tok (GHHRQRepoPR account repo num) =
-    GHHRSRepoPR <$> repoPR tok account repo num
+runRequest :: MonadUnliftIO m => OAuthToken Github -> GithubReq -> m GithubRsp
+runRequest tok GHRQRepos =
+    GHRSRepos <$> repos tok
+runRequest tok (GHRQRepoPRs account repo) =
+    GHRSRepoPRs <$> repoPRs tok account repo
+runRequest tok (GHRQRepoPR account repo num) =
+    GHRSRepoPR <$> repoPR tok account repo num
 
 --
 --
@@ -61,7 +63,7 @@ runRequest tok (GHHRQRepoPR account repo num) =
 logRequestException :: (
     MonadUnliftIO m,
     ContextReader r m,
-    HasContext r MinLogLevel) => GithubHUDReq -> SomeException -> m ()
+    HasContext r MinLogLevel) => GithubReq -> SomeException -> m ()
 logRequestException req e = log Log {
     logTime = (),
     logLevel = Error,

@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module HUD.Github.Server.Repo (
+    repos,
     repoPRs,
     repoPR
 ) where
@@ -18,22 +19,42 @@ import Data.Text.Encoding (encodeUtf8)
 import Data.Vector (toList)
 import GitHub.Auth (Auth(OAuth))
 import qualified GitHub.Data.Comments as GD
-import GitHub.Data.Definitions (SimpleUser(..))
+import GitHub.Data.Definitions (SimpleOwner(..), SimpleUser(..))
 import qualified GitHub.Data.GitData as GD
 import GitHub.Data.Id (Id(..), untagId)
 import qualified GitHub.Data.Issues as GD
 import GitHub.Data.Name (Name(N), untagName)
 import GitHub.Data.Options (IssueState(..), sortByUpdated, stateOpen)
 import GitHub.Data.PullRequests (PullRequest(..), SimplePullRequest(..))
+import qualified GitHub.Data.Repos as GD
 import GitHub.Data.Request (FetchCount(..))
 import GitHub.Data.URL (getUrl)
 import GitHub.Endpoints.Issues.Comments (commentsR)
 import GitHub.Endpoints.PullRequests (pullRequestR, pullRequestCommitsR, pullRequestsForR)
 import GitHub.Endpoints.PullRequests.Comments (pullRequestCommentsR)
+import GitHub.Endpoints.Repos (currentUserReposR)
 import GitHub.Request (Request, executeRequest)
 import UnliftIO (MonadUnliftIO)
 import UnliftIO.Async (concurrently)
 import UnliftIO.Exception (throwIO)
+
+--
+--
+--
+
+repos :: MonadUnliftIO m => OAuthToken Github -> m [(Account, Repo)]
+repos (OAuthToken tok) = do
+    let auth = OAuth (encodeUtf8 tok)
+    let req = request auth (currentUserReposR GD.RepoPublicityAll FetchAll)
+    fmap (repoAccount &&& repoRepo) . toList <$> req
+
+--
+
+repoAccount :: GD.Repo -> Account
+repoAccount = Account . untagName . simpleOwnerLogin . GD.repoOwner
+
+repoRepo :: GD.Repo -> Repo
+repoRepo = Repo . untagName . GD.repoName
 
 --
 --
@@ -46,36 +67,6 @@ repoPRs (OAuthToken tok) (Account account) (Repo name) = do
     let req = pullRequestsForR (N account) (N name) opts (FetchAtLeast 50)
     fmap simplePR . toList <$> request auth req
 
---
---
---
-
-repoPR :: MonadUnliftIO m => OAuthToken Github -> Account -> Repo -> PRNum -> m PRDetails
-repoPR (OAuthToken tok) (Account account) (Repo name) (PRNum num) = do
-    let auth = OAuth (encodeUtf8 tok)
-    let prReq = pullRequestR (N account) (N name) (Id num)
-    let commitsReq = pullRequestCommitsR (N account) (N name) (Id num) FetchAll
-    let commentsReq = pullRequestCommentsR (N account) (N name) (Id num) FetchAll
-    let issueCommentsReq = commentsR (N account) (N name) (Id num) FetchAll
-    ((p, cx), (cmx, icmx)) <- concurrently
-            (concurrently (request auth prReq) (request auth commitsReq))
-            (concurrently (request auth commentsReq) (request auth issueCommentsReq))
-    pure PRDetails {
-        prdPR = pr p,
-        prdCommits = commit <$> toList cx,
-        prdComments = comment <$> toList cmx,
-        prdIssueComments = issueComment <$> toList icmx
-    }
-
---
---
---
-
-request :: MonadUnliftIO m => Auth -> Request k a -> m a
-request auth = either throwIO pure <=< liftIO . executeRequest auth
-
---
---
 --
 
 simplePR :: SimplePullRequest -> PR
@@ -99,6 +90,25 @@ simplePR r = PR {
 --
 --
 
+repoPR :: MonadUnliftIO m => OAuthToken Github -> Account -> Repo -> PRNum -> m PRDetails
+repoPR (OAuthToken tok) (Account account) (Repo name) (PRNum num) = do
+    let auth = OAuth (encodeUtf8 tok)
+    let prReq = pullRequestR (N account) (N name) (Id num)
+    let commitsReq = pullRequestCommitsR (N account) (N name) (Id num) FetchAll
+    let commentsReq = pullRequestCommentsR (N account) (N name) (Id num) FetchAll
+    let issueCommentsReq = commentsR (N account) (N name) (Id num) FetchAll
+    ((p, cx), (cmx, icmx)) <- concurrently
+            (concurrently (request auth prReq) (request auth commitsReq))
+            (concurrently (request auth commentsReq) (request auth issueCommentsReq))
+    pure PRDetails {
+        prdPR = pr p,
+        prdCommits = commit <$> toList cx,
+        prdComments = comment <$> toList cmx,
+        prdIssueComments = issueComment <$> toList icmx
+    }
+
+--
+
 pr :: PullRequest -> PR
 pr r = PR {
     prID = (PRID . untagId) (pullRequestId r),
@@ -116,8 +126,6 @@ pr r = PR {
     prReviewers = simpleUser <$> toList (pullRequestRequestedReviewers r)
 }
 
---
---
 --
 
 commit :: GD.Commit -> Commit
@@ -138,8 +146,6 @@ stats s = CommitStats {
 }
 
 --
---
---
 
 issueComment :: GD.IssueComment -> IssueComment
 issueComment c = IssueComment {
@@ -152,8 +158,6 @@ issueComment c = IssueComment {
     icoBody = GD.issueCommentBody c
 }
 
---
---
 --
 
 comment :: GD.Comment -> Comment
@@ -168,6 +172,13 @@ comment c = Comment {
     coUser = simpleUser (GD.commentUser c),
     coBody = GD.commentBody c
 }
+
+--
+--
+--
+
+request :: MonadUnliftIO m => Auth -> Request k a -> m a
+request auth = either throwIO pure <=< liftIO . executeRequest auth
 
 --
 --

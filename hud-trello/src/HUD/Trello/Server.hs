@@ -47,10 +47,10 @@ request :: (
     ContextReader r m,
     HasContext r HttpManager,
     HasContext r MinLogLevel,
-    HasContext r TrelloClientKey) => OAuthToken Trello -> TrelloHUDReq -> m (Result TrelloHUDRsp)
+    HasContext r TrelloClientKey) => OAuthToken Trello -> TrelloReq -> m (Result TrelloRsp)
 request tok req = catch (Success <$> runRequest tok req) $ \e -> do
     logRequestException req e
-    (pure . Success) (TRHRSFailure e)
+    (pure . Success) (TRRSFailure e)
 
 --
 --
@@ -61,9 +61,11 @@ runRequest :: (
     MonadThrow m,
     ContextReader r m,
     HasContext r HttpManager,
-    HasContext r TrelloClientKey) => OAuthToken Trello -> TrelloHUDReq -> m TrelloHUDRsp
-runRequest tok (TRHRQBoardOverview board) =
-    TRHRSBoardOverview <$> boardOverview tok board
+    HasContext r TrelloClientKey) => OAuthToken Trello -> TrelloReq -> m TrelloRsp
+runRequest tok TRRQBoards =
+    TRRSBoards <$> boards tok
+runRequest tok (TRRQBoardOverview board) =
+    TRRSBoardOverview <$> boardOverview tok board
 
 --
 --
@@ -72,7 +74,7 @@ runRequest tok (TRHRQBoardOverview board) =
 logRequestException :: (
     MonadUnliftIO m,
     ContextReader r m,
-    HasContext r MinLogLevel) => TrelloHUDReq -> TrelloRequestException -> m ()
+    HasContext r MinLogLevel) => TrelloReq -> TrelloRequestException -> m ()
 logRequestException req e = log Log {
     logTime = (),
     logLevel = Error,

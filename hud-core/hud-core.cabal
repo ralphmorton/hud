@@ -73,7 +73,7 @@ library
     , HUD.Data.HUD.Github.Repo.Commit
     , HUD.Data.HUD.Github.Repo.Comment
     , HUD.Data.HUD.Github.Repo.PR
-    , HUD.Data.HUD.Trello.Common
+    , HUD.Data.HUD.Trello.Member
     , HUD.Data.HUD.Trello.Board
     , HUD.Operational.SQL
     , HUD.Operational.Mongo

@@ -1,9 +1,9 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module HUD.Data.HUD.Trello.Common (
-    Member(..),
-    Board(..)
+module HUD.Data.HUD.Trello.Member (
+    MemberID(..),
+    Member(..)
 ) where
 
 import HUD.Bridge (Bridge)
@@ -16,14 +16,16 @@ import GHC.Generics (Generic)
 --
 --
 
-newtype Member = Member {
-    unMember :: Text
+newtype MemberID = MemberID {
+    unMemberID :: Text
 } deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)
 
 --
 --
 --
 
-newtype Board = Board {
-    unBoard :: Text
+data Member = Member {
+    mID :: MemberID,
+    mAvatarURL :: Text,
+    mFullName :: Text
 } deriving (Bridge, Eq, Ord, Show, Generic, FromJSON, ToJSON)

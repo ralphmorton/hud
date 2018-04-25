@@ -37,8 +37,31 @@ boName :: Lens' BoardOverview String
 boName = _Newtype <<< prop (SProxy :: SProxy "boName")
 
 --------------------------------------------------------------------------------
+newtype Board =
+    Board {
+      unBoard :: String
+    }
+
+derive instance genericBoard :: Generic Board
+
+derive instance newtypeBoard :: Newtype Board _
+
+
+--------------------------------------------------------------------------------
+_Board :: Iso' Board { unBoard :: String}
+_Board = _Newtype
+
+unBoard :: Lens' Board String
+unBoard = _Newtype <<< prop (SProxy :: SProxy "unBoard")
+
+--------------------------------------------------------------------------------
 instance decodeBoardOverview :: DecodeJson BoardOverview where
     decodeJson = Aeson.decodeJson
 instance encodeBoardOverview :: EncodeJson BoardOverview where
+    encodeJson = Aeson.encodeJson
+derive instance eqBoard :: Eq Board
+instance decodeBoard :: DecodeJson Board where
+    decodeJson = Aeson.decodeJson
+instance encodeBoard :: EncodeJson Board where
     encodeJson = Aeson.encodeJson
 
