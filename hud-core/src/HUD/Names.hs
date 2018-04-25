@@ -5,13 +5,15 @@ module HUD.Names (
     module HUD.QueueEndpoint,
     module HUD.IPCProvider,
     GithubAuth,
-    Github
+    Github,
+    Trello
 ) where
 
 import HUD.QueueEndpoint
 import HUD.IPCProvider
 import HUD.Data
 import HUD.Data.HUD.Github
+import HUD.Data.HUD.Trello
 import HUD.Operational.Email (Email)
 
 import Data.Time (NominalDiffTime)
@@ -88,4 +90,18 @@ instance QueueEndpoint Github where
 instance IPCProvider Github where
     type IPCRequest Github = (OAuthToken Github, GithubHUDReq)
     type IPCResponse Github = GithubHUDRsp
+    onHandlerExc _ _ = Reject False
+
+-- | Trello data provider
+data Trello
+
+instance QueueEndpoint Trello where
+    type QueueName Trello = "ipc.trello"
+    type DeadLetterQueueName Trello = "ipc.trello.dl"
+    queueTTL _ = 86400
+    deadLetterTTL _ = 60
+
+instance IPCProvider Trello where
+    type IPCRequest Trello = (OAuthToken Trello, TrelloHUDReq)
+    type IPCResponse Trello = TrelloHUDRsp
     onHandlerExc _ _ = Reject False

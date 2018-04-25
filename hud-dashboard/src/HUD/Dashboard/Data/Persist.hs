@@ -39,6 +39,7 @@ UserEnt sql=users
     email EmailAddress
     password PasswordHash Maybe
     githubToken Text Maybe
+    trelloToken Text Maybe
     UniqueUser email
 AccountUserEnt sql=account_users
     account AccountEntId

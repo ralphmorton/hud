@@ -15,33 +15,52 @@ import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (SProxy(SProxy))
 import HUD.Data.HUD.Github (GithubHUDReq, GithubHUDRsp)
+import HUD.Data.HUD.Trello (TrelloHUDReq, TrelloHUDRsp)
 
 import Prelude
 import Data.Generic (class Generic)
 
-newtype HUDRsp =
+data HUDRsp =
     HRSGithub GithubHUDRsp
+  | HRSTrello TrelloHUDRsp
 
 derive instance genericHUDRsp :: Generic HUDRsp
 
-derive instance newtypeHUDRsp :: Newtype HUDRsp _
-
 
 --------------------------------------------------------------------------------
-_HRSGithub :: Iso' HUDRsp GithubHUDRsp
-_HRSGithub = _Newtype
+_HRSGithub :: Prism' HUDRsp GithubHUDRsp
+_HRSGithub = prism' HRSGithub f
+  where
+    f (HRSGithub a) = Just $ a
+    f _ = Nothing
+
+_HRSTrello :: Prism' HUDRsp TrelloHUDRsp
+_HRSTrello = prism' HRSTrello f
+  where
+    f (HRSTrello a) = Just $ a
+    f _ = Nothing
+
 --------------------------------------------------------------------------------
-newtype HUDReq =
+data HUDReq =
     HRQGithub GithubHUDReq
+  | HRQTrello TrelloHUDReq
 
 derive instance genericHUDReq :: Generic HUDReq
 
-derive instance newtypeHUDReq :: Newtype HUDReq _
-
 
 --------------------------------------------------------------------------------
-_HRQGithub :: Iso' HUDReq GithubHUDReq
-_HRQGithub = _Newtype
+_HRQGithub :: Prism' HUDReq GithubHUDReq
+_HRQGithub = prism' HRQGithub f
+  where
+    f (HRQGithub a) = Just $ a
+    f _ = Nothing
+
+_HRQTrello :: Prism' HUDReq TrelloHUDReq
+_HRQTrello = prism' HRQTrello f
+  where
+    f (HRQTrello a) = Just $ a
+    f _ = Nothing
+
 --------------------------------------------------------------------------------
 instance decodeHUDRsp :: DecodeJson HUDRsp where
     decodeJson = Aeson.decodeJson

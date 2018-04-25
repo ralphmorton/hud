@@ -27,6 +27,7 @@ data HandlerException
     | NotFound
     | InternalFailure
     | MissingGithubToken
+    | MissingTrelloToken
     deriving (Show, Generic, FromJSON, ToJSON)
 
 instance Exception HandlerException

@@ -31,7 +31,6 @@ import Control.Monad.Except
 import Control.Monad.Reader
 import Control.Monad.Trans.Maybe (runMaybeT)
 import Data.Aeson (encode)
-import Data.ByteString.Lazy (ByteString)
 import qualified Data.Map as M
 import Data.Proxy (Proxy)
 import Data.Text (pack)
@@ -52,18 +51,19 @@ server ctx = hoistServer (Proxy :: Proxy API) nat server'
     nat f = do
         res <- liftIO $ handle (pure . Left) (Right <$> runReaderT f ctx)
         case res of
-            Left e -> (throwError . errorCtor e) (encode e)
+            Left e -> throwError $ (errorCtor e) { errBody = encode e }
             Right r -> pure r
 
-errorCtor :: HandlerException -> ByteString -> ServantErr
-errorCtor MissingAuthToken s = err401 { errBody = s }
-errorCtor BadAuthToken s = err401 { errBody = s }
-errorCtor BadPassword s = err403 { errBody = s }
-errorCtor UnknownUser s = err403 { errBody = s }
-errorCtor IllegalPassword s = err400 { errBody = s }
-errorCtor NotFound s = err404 { errBody = s }
-errorCtor InternalFailure s = err500 { errBody = s }
-errorCtor MissingGithubToken s = err400 { errBody = s }
+errorCtor :: HandlerException -> ServantErr
+errorCtor MissingAuthToken = err401
+errorCtor BadAuthToken = err401
+errorCtor BadPassword = err403
+errorCtor UnknownUser = err403
+errorCtor IllegalPassword = err400
+errorCtor NotFound = err404
+errorCtor InternalFailure = err500
+errorCtor MissingGithubToken = err400
+errorCtor MissingTrelloToken = err400
 
 --
 

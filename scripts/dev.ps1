@@ -33,6 +33,14 @@ function global:dev_github() {
     stack exec hud-github
 }
 
+function global:dev_trello() {
+    dev_env_shared
+    set-item Env:NUM_SERVERS 1
+    set-item Env:NUM_AUTHORISERS 1
+    set-item Env:TRELLO_CLIENT_KEY 407114f0fb91ba30d564992575192849
+    stack exec hud-trello
+}
+
 function global:dev_dashboard() {
     dev_env_shared
     set-item Env:PORT 8081
