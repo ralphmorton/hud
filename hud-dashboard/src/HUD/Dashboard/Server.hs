@@ -64,6 +64,7 @@ errorCtor NotFound = err404
 errorCtor InternalFailure = err500
 errorCtor MissingGithubToken = err400
 errorCtor MissingTrelloToken = err400
+errorCtor MissingHerokuToken = err400
 
 --
 

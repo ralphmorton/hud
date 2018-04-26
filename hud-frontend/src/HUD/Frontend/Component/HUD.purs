@@ -11,6 +11,7 @@ import HUD.Data.HUD.Github (GithubReq(GHRQRepos, GHRQRepoPR))
 import HUD.Data.HUD.Github.Common (Account(..), Repo(..), PRNum(..))
 import HUD.Data.HUD.Trello (TrelloReq(TRRQBoards, TRRQBoardOverview))
 import HUD.Data.HUD.Trello.Board (Board(..))
+import HUD.Data.HUD.Heroku (HerokuReq(HRRQOrganisations))
 import HUD.Frontend.Operational (IdentityInfo, OpM)
 import HUD.Frontend.Network.HTTP (AJAX)
 import HUD.Frontend.Network.Dashboard (hud)
@@ -109,4 +110,5 @@ loadViewState = do
     rsp2 <- hud (RQGithub (GHRQRepoPR account repo prnum))
     rsp3 <- hud (RQTrello TRRQBoards)
     rsp4 <- hud (RQTrello (TRRQBoardOverview board))
-    pure { samples: [rsp1, rsp2, rsp3, rsp4] }
+    rsp5 <- hud (RQHeroku HRRQOrganisations)
+    pure { samples: [rsp1, rsp2, rsp3, rsp4, rsp5] }

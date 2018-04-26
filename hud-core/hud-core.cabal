@@ -57,6 +57,7 @@ library
     , HUD.Data.HUD
     , HUD.Data.HUD.Github
     , HUD.Data.HUD.Trello
+    , HUD.Data.HUD.Heroku
     , HUD.Operational
     , HUD.Context
     , HUD.Names
@@ -75,6 +76,7 @@ library
     , HUD.Data.HUD.Github.Repo.PR
     , HUD.Data.HUD.Trello.Member
     , HUD.Data.HUD.Trello.Board
+    , HUD.Data.HUD.Heroku.Organisation
     , HUD.Operational.SQL
     , HUD.Operational.Mongo
     , HUD.Operational.AMQP

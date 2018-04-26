@@ -28,6 +28,7 @@ data HandlerException
     | InternalFailure
     | MissingGithubToken
     | MissingTrelloToken
+    | MissingHerokuToken
     deriving (Show, Generic, FromJSON, ToJSON)
 
 instance Exception HandlerException

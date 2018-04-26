@@ -39,8 +39,12 @@ library
     , http-conduit
     , http-types
   exposed-modules:
-      HUD.Heroku.Authoriser
+      HUD.Heroku.Types
+    , HUD.Heroku.Authoriser
+    , HUD.Heroku.Server
   other-modules:
+      HUD.Heroku.Server.Request
+    , HUD.Heroku.Server.Organisation
   default-language: Haskell2010
   ghc-options: -Wall -Werror -O
 

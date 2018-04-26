@@ -59,6 +59,16 @@ query' user (RQTrello req) = case userTrelloToken user of
             _ -> do
                 logFailure "Trello" req res
                 throwIO InternalFailure
+query' user (RQHeroku req) = case userHerokuToken user of
+    Nothing -> throwIO MissingHerokuToken
+    Just tok -> do
+        res <- ipc 30 (tok, req)
+        case res of
+            Just (IPCResult rsp) ->
+                pure (RSHeroku rsp)
+            _ -> do
+                logFailure "Heroku" req res
+                throwIO InternalFailure
 
 --
 

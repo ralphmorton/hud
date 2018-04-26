@@ -16,6 +16,7 @@ import HUD.IPCProvider
 import HUD.Data
 import HUD.Data.HUD.Github
 import HUD.Data.HUD.Trello
+import HUD.Data.HUD.Heroku
 import HUD.Operational.Email (Email)
 
 import Data.Time (NominalDiffTime)
@@ -124,3 +125,14 @@ instance IPCProvider HerokuAuth where
 
 -- | Heroku data provider
 data Heroku
+
+instance QueueEndpoint Heroku where
+    type QueueName Heroku = "ipc.heroku"
+    type DeadLetterQueueName Heroku = "ipc.heroku.dl"
+    queueTTL _ = 86400
+    deadLetterTTL _ = 60
+
+instance IPCProvider Heroku where
+    type IPCRequest Heroku = (OAuthToken Heroku, HerokuReq)
+    type IPCResponse Heroku = HerokuRsp
+    onHandlerExc _ _ = Reject False

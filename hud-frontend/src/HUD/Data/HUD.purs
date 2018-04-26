@@ -15,6 +15,7 @@ import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (SProxy(SProxy))
 import HUD.Data.HUD.Github (GithubReq, GithubRsp)
+import HUD.Data.HUD.Heroku (HerokuReq, HerokuRsp)
 import HUD.Data.HUD.Trello (TrelloReq, TrelloRsp)
 
 import Prelude
@@ -23,6 +24,7 @@ import Data.Generic (class Generic)
 data Rsp =
     RSGithub GithubRsp
   | RSTrello TrelloRsp
+  | RSHeroku HerokuRsp
 
 derive instance genericRsp :: Generic Rsp
 
@@ -40,10 +42,17 @@ _RSTrello = prism' RSTrello f
     f (RSTrello a) = Just $ a
     f _ = Nothing
 
+_RSHeroku :: Prism' Rsp HerokuRsp
+_RSHeroku = prism' RSHeroku f
+  where
+    f (RSHeroku a) = Just $ a
+    f _ = Nothing
+
 --------------------------------------------------------------------------------
 data Req =
     RQGithub GithubReq
   | RQTrello TrelloReq
+  | RQHeroku HerokuReq
 
 derive instance genericReq :: Generic Req
 
@@ -59,6 +68,12 @@ _RQTrello :: Prism' Req TrelloReq
 _RQTrello = prism' RQTrello f
   where
     f (RQTrello a) = Just $ a
+    f _ = Nothing
+
+_RQHeroku :: Prism' Req HerokuReq
+_RQHeroku = prism' RQHeroku f
+  where
+    f (RQHeroku a) = Just $ a
     f _ = Nothing
 
 --------------------------------------------------------------------------------

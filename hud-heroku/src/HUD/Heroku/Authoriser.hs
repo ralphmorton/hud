@@ -2,7 +2,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module HUD.Heroku.Authoriser (
-    HerokuClient(..),
     authorise
 ) where
 
@@ -14,6 +13,7 @@ import HUD.Operational
 import HUD.Names (Heroku)
 import HUD.Logging
 import HUD.IPC.Server
+import HUD.Heroku.Types
 
 import Control.Monad (mzero)
 import Control.Monad.Catch (MonadThrow)
@@ -26,15 +26,6 @@ import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit hiding (Request, http)
 import Network.HTTP.Types (methodPost)
 import UnliftIO (MonadUnliftIO)
-
---
---
---
-
-data HerokuClient = HerokuClient {
-    hrcClientID :: Text,
-    hrcClientSecret :: Text
-}
 
 --
 --
