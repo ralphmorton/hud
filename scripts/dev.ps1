@@ -41,6 +41,15 @@ function global:dev_trello() {
     stack exec hud-trello
 }
 
+function global:dev_heroku() {
+    dev_env_shared
+    set-item Env:NUM_SERVERS 1
+    set-item Env:NUM_AUTHORISERS 1
+    set-item Env:HEROKU_CLIENT_ID 07714456-81f9-4fed-a678-4366f300c37d
+    set-item Env:HEROKU_CLIENT_SECRET 8a5060a6-225f-4855-915b-231ade7629a9
+    stack exec hud-trello
+}
+
 function global:dev_dashboard() {
     dev_env_shared
     set-item Env:PORT 8081

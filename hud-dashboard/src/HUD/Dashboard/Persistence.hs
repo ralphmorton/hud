@@ -153,7 +153,8 @@ toUser u = User {
     userEmail = userEntEmail u,
     userPassword = userEntPassword u,
     userGithubToken = OAuthToken <$> userEntGithubToken u,
-    userTrelloToken = OAuthToken <$> userEntTrelloToken u
+    userTrelloToken = OAuthToken <$> userEntTrelloToken u,
+    userHerokuToken = OAuthToken <$> userEntHerokuToken u
 }
 
 fromUser :: UTCTime -> User -> UserEnt
@@ -163,7 +164,8 @@ fromUser created u = UserEnt {
     userEntEmail = userEmail u,
     userEntPassword = userPassword u,
     userEntGithubToken = unOAuthToken <$> userGithubToken u,
-    userEntTrelloToken = unOAuthToken <$> userTrelloToken u
+    userEntTrelloToken = unOAuthToken <$> userTrelloToken u,
+    userEntHerokuToken = unOAuthToken <$> userHerokuToken u
 }
 
 --

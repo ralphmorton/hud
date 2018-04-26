@@ -6,7 +6,9 @@ module HUD.Names (
     module HUD.IPCProvider,
     GithubAuth,
     Github,
-    Trello
+    Trello,
+    HerokuAuth,
+    Heroku
 ) where
 
 import HUD.QueueEndpoint
@@ -105,3 +107,20 @@ instance IPCProvider Trello where
     type IPCRequest Trello = (OAuthToken Trello, TrelloReq)
     type IPCResponse Trello = TrelloRsp
     onHandlerExc _ _ = Reject False
+
+-- | Github authoriser
+data HerokuAuth
+
+instance QueueEndpoint HerokuAuth where
+    type QueueName HerokuAuth = "ipc.herokuauth"
+    type DeadLetterQueueName HerokuAuth = "ipc.herokuauth.dl"
+    queueTTL _ = 86400
+    deadLetterTTL _ = 60
+
+instance IPCProvider HerokuAuth where
+    type IPCRequest HerokuAuth = OAuthCode Heroku
+    type IPCResponse HerokuAuth = OAuthResult Heroku
+    onHandlerExc _ _ = Reject False
+
+-- | Heroku data provider
+data Heroku

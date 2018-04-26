@@ -13,7 +13,7 @@ module HUD.Dashboard.Data.Relational (
 
 import HUD.Bridge
 import HUD.Data
-import HUD.Names (Github, Trello)
+import HUD.Names (Github, Heroku, Trello)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Monoid ((<>))
@@ -89,7 +89,8 @@ data User = User {
     userEmail :: EmailAddress,
     userPassword :: Maybe PasswordHash,
     userGithubToken :: Maybe (OAuthToken Github),
-    userTrelloToken :: Maybe (OAuthToken Trello)
+    userTrelloToken :: Maybe (OAuthToken Trello),
+    userHerokuToken :: Maybe (OAuthToken Heroku)
 } deriving (Show, Generic, FromJSON, ToJSON)
 
 --
