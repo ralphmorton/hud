@@ -12,6 +12,8 @@ module HUD.Dashboard.Persistence (
     updateUserEmail,
     updateUserPassword,
     setUserGithubToken,
+    setUserTrelloToken,
+    setUserHerokuToken,
     createUser,
     linkUserToAccount,
     unlinkUserFromAccount,
@@ -19,7 +21,7 @@ module HUD.Dashboard.Persistence (
 ) where
 
 import HUD.Data
-import HUD.Names (Github)
+import HUD.Names (Github, Heroku, Trello)
 import HUD.Dashboard.Data
 
 import Control.Arrow ((&&&))
@@ -94,6 +96,14 @@ updateUserPassword k pwd = toUser <$> updateGet (UserEntKey k) [UserEntPassword 
 -- | Set a user's github token.
 setUserGithubToken :: MonadUnliftIO m => UserKey -> Maybe (OAuthToken Github) -> SqlPersistT m User
 setUserGithubToken k tok = toUser <$> updateGet (UserEntKey k) [UserEntGithubToken =. fmap unOAuthToken tok]
+
+-- | Set a user's trello token.
+setUserTrelloToken :: MonadUnliftIO m => UserKey -> Maybe (OAuthToken Trello) -> SqlPersistT m User
+setUserTrelloToken k tok = toUser <$> updateGet (UserEntKey k) [UserEntTrelloToken =. fmap unOAuthToken tok]
+
+-- | Set a user's heroku token.
+setUserHerokuToken :: MonadUnliftIO m => UserKey -> Maybe (OAuthToken Heroku) -> SqlPersistT m User
+setUserHerokuToken k tok = toUser <$> updateGet (UserEntKey k) [UserEntHerokuToken =. fmap unOAuthToken tok]
 
 -- | Create a user.
 createUser :: MonadUnliftIO m => User -> SqlPersistT m UserKey

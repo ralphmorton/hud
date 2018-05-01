@@ -15,7 +15,7 @@ module HUD.Dashboard.API (
 
 import HUD.Data
 import HUD.Data.HUD
-import HUD.Names (Github)
+import HUD.Names (Github, Heroku, Trello)
 import HUD.Dashboard.Data.Relational (Account, AccountKey, UserLevel)
 
 import Data.Text (Text)
@@ -42,6 +42,10 @@ type API = "api" :>
             "oauth" :> Header "Authorization" Token :>
             (
                 "github" :> ReqBody '[JSON] (OAuthCode Github) :> Post '[JSON] ()
+                :<|>
+                "trello" :> ReqBody '[JSON] (OAuthCode Trello) :> Post '[JSON] ()
+                :<|>
+                "heroku" :> ReqBody '[JSON] (OAuthCode Heroku) :> Post '[JSON] ()
             )
         )
         :<|>

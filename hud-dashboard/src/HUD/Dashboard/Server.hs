@@ -82,6 +82,10 @@ server' =
         :<|>
         (\tok ->
             authUser tok . flip authGithub
+            :<|>
+            authUser tok . flip authTrello
+            :<|>
+            authUser tok . flip authHeroku
         )
     )
     :<|>
