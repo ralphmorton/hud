@@ -81,6 +81,8 @@ server' =
         (\tok pw -> authUser tok $ flip setPassword pw . fst)
         :<|>
         (\tok ->
+            authUser tok (pure . getTokenState . snd)
+            :<|>
             authUser tok . flip authGithub
             :<|>
             authUser tok . flip authTrello

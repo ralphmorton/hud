@@ -3,6 +3,7 @@ module HUD.Frontend.Network.Dashboard (
     login,
     setPassword,
     listAccounts,
+    getTokenState,
     hud
 ) where
 
@@ -11,6 +12,7 @@ import Prelude
 import HUD.Data.Common (EmailAddress)
 import HUD.Data.HUD (Req, Rsp)
 import HUD.Data.Identity (Token, unToken)
+import HUD.Dashboard.Data (TokenState)
 import HUD.Dashboard.Data.Relational (Account, AccountKey, UserLevel)
 import HUD.Frontend.Operational (IdentityInfo(..), OpM)
 import HUD.Frontend.Network.HTTP (class Requestable, AJAX, Method(GET, POST), Request, RequestHeader(..), addHeaders, buildReq, http, httpJSON, jsonData, noData)
@@ -47,6 +49,13 @@ setPassword tok password = do
 
 listAccounts :: forall e c. OpM IdentityInfo c (ajax :: AJAX | e) (Array (Tuple (Tuple AccountKey Account) UserLevel))
 listAccounts = httpJSON =<< authedReq GET "api/accounts" noData
+
+--
+--
+--
+
+getTokenState :: forall e c. OpM IdentityInfo c (ajax :: AJAX | e) TokenState
+getTokenState = httpJSON =<< authedReq GET "api/auth/oauth/state" noData
 
 --
 --

@@ -4,9 +4,11 @@
 module HUD.Dashboard.Data (
     module HUD.Dashboard.Data.Relational,
     module HUD.Dashboard.Data.Persist,
-    HandlerException(..)
+    HandlerException(..),
+    TokenState(..)
 ) where
 
+import HUD.Bridge (Bridge)
 import HUD.Dashboard.Data.Relational
 import HUD.Dashboard.Data.Persist
 
@@ -29,6 +31,16 @@ data HandlerException
     | MissingGithubToken
     | MissingTrelloToken
     | MissingHerokuToken
-    deriving (Show, Generic, FromJSON, ToJSON)
+    deriving (Bridge, Show, Generic, FromJSON, ToJSON)
 
 instance Exception HandlerException
+
+--
+--
+--
+
+data TokenState = TokenState {
+    tsGithub :: Bool,
+    tsTrello :: Bool,
+    tsHeroku :: Bool
+} deriving (Bridge, Show, Generic, FromJSON, ToJSON)

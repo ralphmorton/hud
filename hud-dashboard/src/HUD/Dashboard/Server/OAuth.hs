@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module HUD.Dashboard.Server.OAuth (
+    getTokenState,
     authGithub,
     authTrello,
     authHeroku
@@ -19,10 +20,22 @@ import HUD.Dashboard.Persistence (setUserGithubToken, setUserHerokuToken, setUse
 
 import Control.Monad (void)
 import qualified Data.Map as M
+import Data.Maybe (isJust)
 import Data.Monoid ((<>))
 import Data.Text (Text, pack)
 import UnliftIO (MonadUnliftIO)
 import UnliftIO.Exception (throwIO)
+
+--
+--
+--
+
+getTokenState :: User -> TokenState
+getTokenState u = TokenState {
+    tsGithub = isJust (userGithubToken u),
+    tsTrello = isJust (userTrelloToken u),
+    tsHeroku = isJust (userHerokuToken u)
+}
 
 --
 --
