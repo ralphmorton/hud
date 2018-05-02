@@ -53,7 +53,10 @@ type Context i c = {
 
 type Config = {
     identity :: Endpoint,
-    dashboard :: Endpoint
+    dashboard :: Endpoint,
+    github :: { appID :: String },
+    trello :: { appID :: String },
+    heroku :: { appID :: String }
 }
 
 type Endpoint = {

@@ -4,6 +4,9 @@ module HUD.Frontend.Network.Dashboard (
     setPassword,
     listAccounts,
     getTokenState,
+    authGithub,
+    authTrello,
+    authHeroku,
     hud
 ) where
 
@@ -12,6 +15,7 @@ import Prelude
 import HUD.Data.Common (EmailAddress)
 import HUD.Data.HUD (Req, Rsp)
 import HUD.Data.Identity (Token, unToken)
+import HUD.Data.OAuth (OAuthCode)
 import HUD.Dashboard.Data (TokenState)
 import HUD.Dashboard.Data.Relational (Account, AccountKey, UserLevel)
 import HUD.Frontend.Operational (IdentityInfo(..), OpM)
@@ -20,6 +24,7 @@ import HUD.Frontend.Network.HTTP (class Requestable, AJAX, Method(GET, POST), Re
 import Control.Monad ((<=<))
 import Control.Monad.Reader (ask)
 import Data.Bifunctor (bimap)
+import Data.Generic (class Generic)
 import Data.Lens ((^.))
 import Data.Maybe (Maybe)
 import Data.Time.Duration (Seconds(..))
@@ -56,6 +61,27 @@ listAccounts = httpJSON =<< authedReq GET "api/accounts" noData
 
 getTokenState :: forall e c. OpM IdentityInfo c (ajax :: AJAX | e) TokenState
 getTokenState = httpJSON =<< authedReq GET "api/auth/oauth/state" noData
+
+--
+--
+--
+
+authGithub :: forall e c a. Generic a => OAuthCode a -> OpM IdentityInfo c (ajax :: AJAX | e) Unit
+authGithub = http <=< authedReq POST "api/auth/oauth/github" <<< jsonData
+
+--
+--
+--
+
+authTrello :: forall e c a. Generic a => OAuthCode a -> OpM IdentityInfo c (ajax :: AJAX | e) Unit
+authTrello = http <=< authedReq POST "api/auth/oauth/trello" <<< jsonData
+
+--
+--
+--
+
+authHeroku :: forall e c a. Generic a => OAuthCode a -> OpM IdentityInfo c (ajax :: AJAX | e) Unit
+authHeroku = http <=< authedReq POST "api/auth/oauth/heroku" <<< jsonData
 
 --
 --

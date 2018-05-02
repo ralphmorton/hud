@@ -14,6 +14,7 @@ import HUD.Frontend.Component.Login as L
 import HUD.Frontend.Component.Onboard as O
 import HUD.Frontend.Component.Error as E
 import HUD.Frontend.Component.SelectAccount as S
+import HUD.Frontend.Component.Apps as A
 import HUD.Frontend.Component.Dashboard as D
 import HUD.Frontend.Component.List as LI
 import HUD.Frontend.Component.HUD as H
@@ -77,6 +78,10 @@ boot cfg = runHalogenAff do
             Error -> public idNat cfg E.comp unit
         Just (Authed r) -> case r of
             SelectAccount -> authed cfg S.comp unit
+            Apps -> authed cfg A.comp unit
+            AuthGithub _ -> authed cfg S.comp unit
+            AuthTrello _ -> authed cfg S.comp unit
+            AuthHeroku _ -> authed cfg S.comp unit
             List acc -> dashboard cfg LI.comp unit r acc
             HUD acc -> dashboard cfg H.comp unit r acc
 

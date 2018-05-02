@@ -1,7 +1,7 @@
 
 exports.getPathInfo_ = function () {
-    function buildQM (s) {
-        var sp = s.replace('?', '');
+    function buildM (c, s) {
+        var sp = s.replace(c, '');
         var qpx = sp.split('&');
         var qmap = {};
         for (var i = 0; i < qpx.length; i++) {
@@ -13,7 +13,7 @@ exports.getPathInfo_ = function () {
         return qmap;
     };
 
-    function extractPI (path, qpx) {
+    function extractPI (path, qpx, hpx) {
         var parts = path.split('/');
         var res = [];
         for (var i = 0; i < parts.length; i++) {
@@ -22,11 +22,16 @@ exports.getPathInfo_ = function () {
                 res.push(decodeURIComponent(part));
             }
         }
-        return [res, buildQM(qpx)];
+        return {
+            px: res,
+            qpx: buildM('?', qpx),
+            hpx: buildM('#', hpx)
+        };
     };
 
     var path = document.location.pathname;
     var search = document.location.search || '';
+    var hash = document.location.hash || '';
 
-    return extractPI(path, search);
+    return extractPI(path, search, hash);
 };
