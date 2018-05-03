@@ -29,7 +29,7 @@ import Control.Monad.Error.Class (throwError)
 import Data.DateTime (DateTime)
 import Data.DateTime.Locale (LocalValue(..))
 import Data.Maybe (Maybe(..))
-import Data.Tuple (fst, snd)
+import Data.Tuple (Tuple(..), fst, snd)
 import DOM.WebStorage (STORAGE)
 import Halogen (Component)
 import Halogen.Aff (HalogenEffects, awaitBody, runHalogenAff)
@@ -78,10 +78,10 @@ boot cfg = runHalogenAff do
             Error -> public idNat cfg E.comp unit
         Just (Authed r) -> case r of
             SelectAccount -> authed cfg S.comp unit
-            Apps -> authed cfg A.comp unit
-            AuthGithub _ -> authed cfg S.comp unit
-            AuthTrello _ -> authed cfg S.comp unit
-            AuthHeroku _ -> authed cfg S.comp unit
+            Apps -> authed cfg (A.comp Nothing) unit
+            AuthGithub code -> authed cfg (A.comp (Tuple A.Github <$>code)) unit
+            AuthTrello code -> authed cfg (A.comp (Tuple A.Trello <$> code)) unit
+            AuthHeroku code -> authed cfg (A.comp (Tuple A.Heroku <$> code)) unit
             List acc -> dashboard cfg LI.comp unit r acc
             HUD acc -> dashboard cfg H.comp unit r acc
 

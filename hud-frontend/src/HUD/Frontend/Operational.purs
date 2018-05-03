@@ -55,7 +55,7 @@ type Config = {
     identity :: Endpoint,
     dashboard :: Endpoint,
     github :: { appID :: String },
-    trello :: { appID :: String },
+    trello :: { appID :: String, appName :: String },
     heroku :: { appID :: String }
 }
 

@@ -10,3 +10,7 @@ exports.redirect_ = function (url) {
         window.location.href = url;
     };
 };
+
+exports.origin_ = function () {
+    return window.location.origin
+};

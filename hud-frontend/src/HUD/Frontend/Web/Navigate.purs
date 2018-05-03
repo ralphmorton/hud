@@ -2,7 +2,8 @@
 module HUD.Frontend.Web.Navigate (
     NAVIGATE,
     navigate,
-    redirect
+    redirect,
+    origin
 ) where
 
 import Prelude
@@ -25,6 +26,8 @@ foreign import navigate_ :: forall e. String -> Eff (navigate :: NAVIGATE | e) U
 
 foreign import redirect_ :: forall e. String -> Eff (navigate :: NAVIGATE | e) Unit
 
+foreign import origin_ :: forall e. Eff (navigate :: NAVIGATE | e) String
+
 --
 --
 --
@@ -38,3 +41,10 @@ navigate = liftEff <<< navigate_ <<< toPath
 
 redirect :: forall m e a. MonadAff (navigate :: NAVIGATE | e) m => String -> m Unit
 redirect = liftEff <<< redirect_
+
+--
+--
+--
+
+origin :: forall m e a. MonadAff (navigate :: NAVIGATE | e) m => m String
+origin = liftEff origin_
